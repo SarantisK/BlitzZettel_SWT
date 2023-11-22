@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.blitzzettel"
-        minSdk = 24
+        minSdk = 23 //24 eigentlich
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
