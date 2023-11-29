@@ -58,6 +58,20 @@ class Api() {
         val response = client.newCall(request).execute()
         val temp = response.body?.string()
         return temp
+
     }
+    suspend fun getAllBlitzTagsApi(): String?{
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("http://10.0.2.2:23123/z?q=tags%3A%23blitz.&_seed=1581") // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
+            .build()
+
+        val response = client.newCall(request).execute()
+        val temp = response.body?.string()
+
+        return temp
+
+    }
+
 }
 

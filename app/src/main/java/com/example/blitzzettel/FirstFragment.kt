@@ -45,8 +45,8 @@ class FirstFragment : Fragment() {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
         lifecycleScope.launch {
-            val geo =withContext(Dispatchers.IO) {api.testingAPI()}
-            binding.textviewFirst.text= geo;
+            binding.textviewFirst.text= withContext(Dispatchers.IO) {api.getAllBlitzTagsApi()}
+            ;
         }
     }
 
