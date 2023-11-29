@@ -1,5 +1,5 @@
 1. Öffnen Sie die Eingabeaufforderung (CMD) und wechseln Sie zum Hauptverzeichnis des Blitzzettel Projekts.
-2. Führe den Befehl 'gradlew assembleDebug' ggf. muss Gradle noch gedownloaded werden falls nicht funktional
+2. Führe den Befehl 'gradlew assembleDebug' ggf. muss Gradle noch gedownloaded werden falls nicht funktional. Falls Fehler (Falsche Javaversion) neue version benötigt.
 3. Finden sie die APK Datei unter ...'app/build/outputs/apk/debug/'
 4. Anschließend muss die ADB(Android debug bridge) installiert werden, https://developer.android.com/studio#downloads befeindet sich ganz unten als 'command-line tools only'
 5. Verwenden sie den Befehl 'adb install Pfad\zur\Ihrer\App.apk' , hierbei wird versuch die APK auf dem verbundenen Gerät/Emulator zu installieren
