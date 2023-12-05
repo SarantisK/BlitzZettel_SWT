@@ -1,4 +1,4 @@
-Copyright (c) 2023 kunal-ll
+Copyright (c) 2023 Sarantis Kostidis, Auron Maxharraj, Hanefi Yildirim, Hannes Lambert, Daniel Baudo, Gabriel Oettli and Kunal Singh
 
                           Licensed under the EUPL
 
