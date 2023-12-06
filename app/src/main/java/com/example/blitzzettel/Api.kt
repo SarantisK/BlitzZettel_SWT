@@ -8,68 +8,100 @@ import java.net.URL
 
 class Api() {
 
-        // Funktion weist der View Daten aus API zu
-        suspend fun fetchDataAndDisplay(): String {
-            val response = fetchDataFromAPI()
-            return response
-        }
+    // Funktion weist der View Daten aus API zu
+    suspend fun fetchDataAndDisplay(): String {
+        val response = fetchDataFromAPI()
+        return response
+    }
 
-        // Funktion für API Aufruf
-        suspend fun fetchDataFromAPI(): String {
-            val url = URL("https://10.0.2.2/z") //?q=tags%3A%23blitz&enc=plain
-            val connection = url.openConnection() as HttpURLConnection
+    // Funktion für API Aufruf
+    suspend fun fetchDataFromAPI(): String {
+        val url = URL("https://10.0.2.2/z") //?q=tags%3A%23blitz&enc=plain
+        val connection = url.openConnection() as HttpURLConnection
 
-            return try {
-                connection.requestMethod = "GET"
-                val responseCode = connection.responseCode
+        return try {
+            connection.requestMethod = "GET"
+            val responseCode = connection.responseCode
 
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    val inputStream = BufferedReader(InputStreamReader(connection.inputStream))
-                    var inputLine: String?
-                    val response = StringBuffer()
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val inputStream = BufferedReader(InputStreamReader(connection.inputStream))
+                var inputLine: String?
+                val response = StringBuffer()
 
-                    while (inputStream.readLine().also { inputLine = it } != null) {
-                        response.append(inputLine)
-                    }
-                    inputStream.close()
-
-                    connection.disconnect()
-
-                    response.toString()
-                } else {
-                    "HTTP GET request failed: $responseCode"
+                while (inputStream.readLine().also { inputLine = it } != null) {
+                    response.append(inputLine)
                 }
-            } catch (e: Exception) {
-                e.toString()
-            } finally {
+                inputStream.close()
+
                 connection.disconnect()
+
+                response.toString()
+            } else {
+                "HTTP GET request failed: $responseCode"
             }
-
-
+        } catch (e: Exception) {
+            e.toString()
+        } finally {
+            connection.disconnect()
         }
+
+
+    }
 
     //Gibt als Test einfach mal alle Zettel
-    suspend fun testingAPI(): String?{
+    suspend fun testingAPI(): String? {
         val client = OkHttpClient()
         val request = Request.Builder()
             .url("http://10.0.2.2:23123/z") // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
             .build()
 
         val response = client.newCall(request).execute()
+
+
         val temp = response.body?.string()
         return temp
 
     }
-    suspend fun getAllBlitzTagsApi(): String?{
+
+    suspend fun postGenerateToken()
+    {
+
+    }
+    suspend fun renewToken(p_token:String)
+    {
+
+    }
+
+    suspend fun getAllBlitzTagsApi(): String? {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("http://10.0.2.2:23123/z?q=tags%3A%23blitz.&_seed=1581") // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
+            .url("http://10.0.2.2:23123/z?q=tags%3A%23blitz.") // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
             .build()
 
         val response = client.newCall(request).execute()
-        val temp = response.body?.string()
+        if (response.code == 200) {
+            val temp = response.body?.string()
 
-        return temp
+            return temp
+        }
+        if (response.code == 204) {
+            return "Keine Zettel vorhanden"
+        }
+        if (response.code == 400) {
+            return "Error 400, überprüfe ihre Verbindung"
+        }
+        return "test"
+    }
+    suspend fun getSpecificBlitzZettel(p_zID:String):String
+    {
+
+
+
+        return ""
+    }
+
+    suspend fun postZettelErstellen(p_Titel:String,p_content:String)
+    {
 
     }
 
