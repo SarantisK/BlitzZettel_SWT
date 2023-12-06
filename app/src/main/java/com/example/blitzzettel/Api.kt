@@ -65,7 +65,7 @@ class Api() {
 
     }
 
-    suspend fun postGenerateToken()
+    suspend fun postGenerateToken(username:String,hashpw:String)
     {
 
     }
@@ -107,9 +107,9 @@ class Api() {
     {
         val client = OkHttpClient()
         val mediaType = "text/plain".toMediaType()
-        val body = String.format("title: %s\r\nrole: zettel\r\ntags: #blitz\r\nsyntax: zmk \r\nvisibility: login\r\n\r\n%s",p_titel,p_content)
+        val body = String.format("title: %s\r\nrole: zettel\r\ntags: #blitz\r\nsyntax: zmk \r\nvisibility: login\r\n\r\n%s",p_titel,p_content) // Body wird in zettelmarkup erstellt
         val request = Request.Builder()
-            .url("http://localhost:23123/z")
+            .url("http://10.0.2.2:23123/z") //bugfix hier, war localhost soll 10.0.2.2
             .post(body.toRequestBody(mediaType))
             .addHeader("Content-Type", "text/plain")
             .build()
