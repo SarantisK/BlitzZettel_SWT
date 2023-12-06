@@ -1,6 +1,8 @@
 package com.example.blitzzettel
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -75,7 +77,7 @@ class Api() {
     suspend fun getAllBlitzTagsApi(): String? {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("http://10.0.2.2:23123/z?q=tags%3A%23blitz.") // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
+            .url("http://10.0.2.2:23123/z?q=tags%3A%23blitz") // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
             .build()
 
         val response = client.newCall(request).execute()
@@ -100,10 +102,18 @@ class Api() {
         return ""
     }
 
-    suspend fun postZettelErstellen(p_Titel:String,p_content:String)
+
+    suspend fun postZettelErstellen(p_titel:String,p_content:String)
     {
-
+        val client = OkHttpClient()
+        val mediaType = "text/plain".toMediaType()
+        val body = String.format("title: %s\r\nrole: zettel\r\ntags: #blitz\r\nsyntax: zmk \r\nvisibility: login\r\n\r\n%s",p_titel,p_content)
+        val request = Request.Builder()
+            .url("http://localhost:23123/z")
+            .post(body.toRequestBody(mediaType))
+            .addHeader("Content-Type", "text/plain")
+            .build()
+        val response = client.newCall(request).execute()
     }
-
 }
 
