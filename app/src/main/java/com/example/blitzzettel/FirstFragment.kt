@@ -44,11 +44,17 @@ class FirstFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
+
+        // Titel aller Blitzzettel anzeigen
         lifecycleScope.launch {
-            binding.textviewFirst.text= withContext(Dispatchers.IO) {api.getAllBlitzTagsApi()}
-            ;
+            val responseData = withContext(Dispatchers.IO) {
+                api.getAllBlitzTagsApi()
+            }
+            val zettelList = parseZettelListApi(responseData.toString())
+            binding.textviewFirst.text = zettelList.joinToString("\n") { it.title }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
