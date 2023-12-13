@@ -109,6 +109,31 @@ class Api() {
     }
     suspend fun getSpecificBlitzZettel(p_zID:String):String?
     {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(String.format("http://10.0.2.2:23123/z/%s",p_zID)) // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
+            .build()
+
+        val response = client.newCall(request).execute()
+        if (response.code == 200) {
+            ///Wenn Request funktioniert und Zettel Inhalt hat
+            val temp = response.body?.string()
+
+            return temp
+        }
+        if (response.code == 204) {
+            /// Wenn Request funktioniert, aber kein Inhalt hat
+            return ""
+        }
+        if (response.code == 400) {
+            ///Falls keine Verbindung möglich, Zettel sollte immer vorhanden sein
+            ///da wir die Werte aus getAllBlitzTagsAPI nehmen
+            return "Error 400, überprüfe ihre Verbindung"
+        }
+        return "test"
+
+
+
         return ""
     }
 
