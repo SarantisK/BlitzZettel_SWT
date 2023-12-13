@@ -17,6 +17,7 @@ class Api() {
     }
 
     // Funktion für API Aufruf
+    // superseded by API via OkHttp Package
     suspend fun fetchDataFromAPI(): String {
         val url = URL("https://10.0.2.2/z") //?q=tags%3A%23blitz&enc=plain
         val connection = url.openConnection() as HttpURLConnection
@@ -46,11 +47,10 @@ class Api() {
         } finally {
             connection.disconnect()
         }
-
-
     }
 
     //Gibt als Test einfach mal alle Zettel
+    //superseded by OkHttp Package
     suspend fun testingAPI(): String? {
         val client = OkHttpClient()
         val request = Request.Builder()
@@ -62,16 +62,29 @@ class Api() {
 
         val temp = response.body?.string()
         return temp
-
     }
 
     suspend fun postGenerateToken(username:String,hashpw:String)
     {
-
+        val client = OkHttpClient()
+        val mediaType = "text/plain".toMediaType()
+        val body = "".toRequestBody(mediaType)
+        val request = Request.Builder()
+            .url(String.format("http://127.0.0.1:23123/a?username=%s&password=%s",username,hashpw))
+            .post(body)
+            .build()
+        val response = client.newCall(request).execute()
     }
-    suspend fun renewToken(p_token:String)
+    suspend fun renewToken(p_token:String) //
     {
-
+        val client = OkHttpClient()
+        val mediaType = "text/plain".toMediaType()
+        val body = "".toRequestBody(mediaType)
+        val request = Request.Builder()
+            .url(String.format("http://127.0.0.1:23123/a?Authorization=%s",p_token))
+            .put(body)
+            .build()
+        val response = client.newCall(request).execute()
     }
 
     suspend fun getAllBlitzTagsApi(): String? {
@@ -94,11 +107,8 @@ class Api() {
         }
         return "test"
     }
-    suspend fun getSpecificBlitzZettel(p_zID:String):String
+    suspend fun getSpecificBlitzZettel(p_zID:String):String?
     {
-
-
-
         return ""
     }
 
