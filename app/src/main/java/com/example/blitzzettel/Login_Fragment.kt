@@ -1,16 +1,16 @@
 package com.example.blitzzettel
 
+import android.R
+import android.app.Activity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import android.widget.Button
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.blitzzettel.databinding.FragmentLoginBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,7 +43,7 @@ class Login_Fragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentLoginBinding.inflate(inflater,container,false)
-        return inflater.inflate(R.layout.fragment_login_, container, false)
+        return binding.root //inflater.inflate(R.layout.fragment_login_, container, false)
 
     }
 
@@ -51,7 +51,7 @@ class Login_Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.anmeldebutton.setOnClickListener{
-            findNavController().navigate(R.id.action_login_Fragment_to_FirstFragment)
+            findNavController().navigate(R.id.action_Login_Fragment_to_Firstragment)
         }
     }
 
