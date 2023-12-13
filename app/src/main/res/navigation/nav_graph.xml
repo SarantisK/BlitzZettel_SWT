@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/login_Fragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/FirstFragment"
@@ -26,12 +26,12 @@
             app:destination="@id/FirstFragment" />
     </fragment>
     <fragment
-        android:id="@+id/login_Fragment"
-        android:name="com.example.blitzzettel.Login_Fragment"
-        android:label="fragment_login_"
-        tools:layout="@layout/fragment_login_" >
+        android:id="@+id/loginFragment"
+        android:name="com.example.blitzzettel.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_login_Fragment_to_FirstFragment"
+            android:id="@+id/action_loginFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>
