@@ -34,9 +34,24 @@ class LoginFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        val cred = EncryptedPrefsManager(requireContext())
+
+        if (EncryptedPrefsManager.hasCredentials(requireContext())) {
+            val credentials = cred.getCredentials()
+            binding.editTextTextNutzername.setText(credentials.first)
+            binding.editTextTextPassword.setText(credentials.second)
+            binding.editTextServerid.setText(credentials.third)
+
+        }
+
         binding.anmeldeButton.setOnClickListener {
+            val nutzername = binding.editTextTextNutzername.text.toString()
+            val passwort = binding.editTextTextPassword.text.toString()
+            val serverId = binding.editTextServerid.text.toString()
+            cred.saveCredentials(nutzername, passwort, serverId)
+
             findNavController().navigate(R.id.action_loginFragment_to_HomeFragment)
         }
+
     }
 }
