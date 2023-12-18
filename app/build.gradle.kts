@@ -53,4 +53,9 @@ dependencies {
 
     //okhttp3
     implementation("com.squareup.okhttp3:okhttp:4.11.0") //Notwendig für die API Requests
+
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
+
+
 }
