@@ -57,5 +57,6 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
 
-
+    // Shared Preferances
+    implementation("androidx.security:security-crypto:1.0.0-alpha02")
 }

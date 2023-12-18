@@ -19,7 +19,7 @@ class ZettelAdapter(var zettelList: List<Zettel>, private val onClick: (Zettel) 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val zettel = zettelList[position]
-        holder.titleView.text = zettel.title
+        holder.titleView.text = "- ${zettel.title}"
         holder.titleView.setOnClickListener { onClick(zettel) }
         //holder.itemView.setOnClickListener { onClick(zettel) }
     }
