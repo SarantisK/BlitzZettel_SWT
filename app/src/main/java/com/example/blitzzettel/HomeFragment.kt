@@ -41,7 +41,8 @@ class HomeFragment : Fragment() {
 
         // Initialisieren des Adapters mit einer leeren Liste
         val adapter = ZettelAdapter(emptyList()) { zettel ->
-            // Adapter wird Funktion übergeben zur
+            // Bei Klick auf einem Zettel wird zum SecondFragment navigiert
+            // und die Zettel-ID übergeben
             val bundle = bundleOf("zettelId" to zettel.id)
             findNavController().navigate(R.id.action_HomeFragment_to_SecondFragment, bundle)
         }
@@ -59,7 +60,7 @@ class HomeFragment : Fragment() {
             // Parsen der Daten als Liste von Zettel-Objekten
             val zettelList = parseZettelListApi(responseData.toString())
 
-            // Aktualisieren des Adaptesr auf dem Hauptthread mit Zettel-Liste
+            // Aktualisieren des Adapters auf dem Hauptthread mit Zettel-Liste
             withContext(Dispatchers.Main) {
                 adapter.zettelList = zettelList
                 adapter.notifyDataSetChanged()

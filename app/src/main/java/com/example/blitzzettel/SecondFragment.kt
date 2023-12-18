@@ -28,7 +28,7 @@ class SecondFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        // Erstellt Binding Klasse, um
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -37,17 +37,22 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Zettel-ID, die von HomeFragment übergeben wurde
         val zettelId = arguments?.getString("zettelId")
 
+        // Auf Button "buttonSecond" geklickt, dann zum HomeFragment navigieren
         binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_SecondFragment_to_HomeFragment)
         }
-        lifecycleScope.launch {
-            binding.textviewSecond.text = withContext(Dispatchers.IO) { api.getAllBlitzTagsApi() }
 
+        // Mit Coroutines die Daten asynchron laden und anzeigen
+        lifecycleScope.launch {
+
+            // API-Aufruf, um einen spezifischen Blitz-Zettel abzurufen
             val responseData = withContext(Dispatchers.IO) {
                 api.getSpecificBlitzZettel(zettelId.toString())
             }
+            // Setzt den Text der TextView auf die API-Antwort
             binding.textviewSecond.text = responseData.toString()
         }
     }
