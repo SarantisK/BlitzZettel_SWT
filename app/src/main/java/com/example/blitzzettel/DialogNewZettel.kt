@@ -4,10 +4,15 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 
 class NewBlitzNoteDialogFragment : DialogFragment() {
+
+    private val api = Api()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())
@@ -20,6 +25,7 @@ class NewBlitzNoteDialogFragment : DialogFragment() {
         val blitzContent= view.findViewById<EditText>(R.id.blitz_content)
         val addButton = view.findViewById<Button>(R.id.addButton)
         val cancelButton = view.findViewById<Button>(R.id.cancelButton)
+        val feedbackTextView = view.findViewById<TextView>(R.id.feedback)
 
         // Define actions for the buttons
         addButton.setOnClickListener {
@@ -28,7 +34,14 @@ class NewBlitzNoteDialogFragment : DialogFragment() {
             val newTitel = blitzTitel.text.toString()
             val newContent= blitzContent.text.toString()
 
-            // Perform your action here
+            lifecycleScope.launch {
+                val feedback = api.postZettelErstellen(newTitel, newContent)
+                // Anzeigen des Feedbacks im TextView
+                feedbackTextView.text = feedback
+            }
+            blitzTitel.text.clear()
+            blitzContent.text.clear()
+
         }
 
         cancelButton.setOnClickListener {
@@ -46,9 +59,3 @@ class NewBlitzNoteDialogFragment : DialogFragment() {
         const val TAG = "NewBlitzNoteDialog"
     }
 }
-
-
-
-
-
-

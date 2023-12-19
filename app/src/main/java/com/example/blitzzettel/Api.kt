@@ -1,4 +1,6 @@
 package com.example.blitzzettel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -143,18 +145,33 @@ class Api() {
 
 
 
-    suspend fun postZettelErstellen(p_titel:String,p_content:String)
-    {
+    suspend fun postZettelErstellen(p_titel: String, p_content: String): String {
         val client = OkHttpClient()
         val mediaType = "text/plain".toMediaType()
-        val body = String.format("title: %s\r\nrole: zettel\r\ntags: #blitz\r\nsyntax: zmk \r\nvisibility: login\r\n\r\n%s",p_titel,p_content) // Body wird in zettelmarkup erstellt
+        val body = String.format(
+            "title: %s\r\nrole: zettel\r\ntags: #blitz\r\nsyntax: zmk \r\nvisibility: login\r\n\r\n%s"
+            , p_titel, p_content
+        )
+
         val request = Request.Builder()
-            .url("http://10.0.2.2:23123/z") //bugfix hier, war localhost soll 10.0.2.2
+            .url("http://10.0.2.2:23123/z")
             .post(body.toRequestBody(mediaType))
             .addHeader("Content-Type", "text/plain")
             .build()
-        val response = client.newCall(request).execute()
+
+        return withContext(Dispatchers.IO) {
+            val response = client.newCall(request).execute()
+
+            // Überprüfen des Statuscodes und Rückgabe entsprechender Strings
+            when (response.code) {
+                201-> "Zettel erfolgreich erstellt"
+                400 -> "Ungültige Anfrage"//Syntax-Error
+                // Weitere Statuscodes hier behandeln
+                else -> ""
+            }
+        }
     }
 
 }
+
 
