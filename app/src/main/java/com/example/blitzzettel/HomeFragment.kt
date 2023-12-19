@@ -66,15 +66,23 @@ class HomeFragment : Fragment() {
                 adapter.notifyDataSetChanged()
             }
         }
+
+
+        binding.button.setOnClickListener {
+            NewBlitzNoteDialogFragment().show(
+                childFragmentManager, NewBlitzNoteDialogFragment.TAG
+            )
+        }
+        // Aufruf des Dialogs beim Klick auf einen Button oder einer anderen Aktion
+
     }
-
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-
-
 }
+
+
+
+
+
+
+
+
+
