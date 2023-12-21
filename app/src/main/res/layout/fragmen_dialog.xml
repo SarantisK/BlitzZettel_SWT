@@ -29,15 +29,17 @@
             android:id="@+id/cancelButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="#000000"
             android:layout_weight="1"
-            android:text="Cancel" />
+            android:text="Abbrechen" />
 
         <Button
             android:id="@+id/addButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="#000000"
             android:layout_weight="1"
-            android:text="Add" />
+            android:text="Hinzufügen" />
 
     </LinearLayout>
 

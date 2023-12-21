@@ -3,18 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.blitzzettel.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_settings2"
-        android:orderInCategory="100"
-        android:title="test2"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_settings3"
-        android:orderInCategory="100"
-        android:title="test"
-        app:showAsAction="never" />
+        android:id="@+id/settings"
+        android:title="Einstellungen"
+        android:icon="@drawable/ic_setting"
+        app:showAsAction="always"/>
 </menu>
