@@ -25,14 +25,19 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        appBarConfiguration = AppBarConfiguration(setOf())
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         //binding.addButton.setOnClickListener { view ->
         //  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //    .setAction("Action", null).show()
         // }
+    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
