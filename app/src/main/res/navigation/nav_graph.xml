@@ -34,4 +34,9 @@
             android:id="@+id/action_loginFragment_to_HomeFragment"
             app:destination="@id/HomeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settings2"
+        android:name="com.example.blitzzettel.settings"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
