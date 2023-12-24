@@ -6,17 +6,21 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 
 
 class NewBlitzNoteDialogFragment : DialogFragment() {
 
-    private val api = Api()
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())
 
+        val viewModel:SharedViewModel by activityViewModels()
+        val api = Api(viewModel.BearerToken.toString(),viewModel.ServerIP)
         // Inflate the custom layout for the dialog
         val view = requireActivity().layoutInflater.inflate(R.layout.fragmen_dialog, null)
 
@@ -46,6 +50,7 @@ class NewBlitzNoteDialogFragment : DialogFragment() {
 
         cancelButton.setOnClickListener {
             // Perform action when Cancel button is clicked
+            findNavController().navigate(R.id.action_HomeFragment_self) // Navigation auf Home Fenster für refresh der Zettel
             dismiss() // Dismiss the dialog
         }
 

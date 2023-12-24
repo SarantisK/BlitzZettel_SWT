@@ -31,7 +31,7 @@
                 android:layout_marginTop="250dp"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:text="Nutzername"
+                android:hint= "Nutzername"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -42,7 +42,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
-                android:text="Passwort"
+                android:hint="Passwort"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -56,7 +56,7 @@
                 android:layout_marginTop="400dp"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:text="ServerID"
+                android:text="10.0.2.2"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />

@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.blitzzettel"
-        minSdk = 23 //24 eigentlich
+        minSdk = 26 //24 eigentlich
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -53,6 +53,10 @@ dependencies {
 
     //okhttp3
     implementation("com.squareup.okhttp3:okhttp:4.11.0") //Notwendig für die API Requests
+
+    //Viewmodell
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("androidx.activity:activity-ktx:1.8.2")
 
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")

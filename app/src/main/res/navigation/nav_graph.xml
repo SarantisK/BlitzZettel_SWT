@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_HomeFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_HomeFragment_self"
+            app:destination="@id/HomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"

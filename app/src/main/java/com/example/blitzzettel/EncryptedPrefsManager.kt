@@ -44,6 +44,11 @@ class EncryptedPrefsManager(context: Context) {
         return Triple(username, password, server)
     }
 
+    fun clearCredentials(){
+        sharedPreferences.edit().clear()
+        sharedPreferences.edit().apply()
+    }
+
     companion object {
         private val prefsName = "my_prefs" // Name für verschlüsselte SharedPreferences
 

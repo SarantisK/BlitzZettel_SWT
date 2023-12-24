@@ -9,48 +9,18 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.Base64
 
-class Api() {
+import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModel
 
-    // Funktion weist der View Daten aus API zu
-    suspend fun fetchDataAndDisplay(): String {
-        val response = fetchDataFromAPI()
-        return response
-    }
 
-    // Funktion für API Aufruf
-    // superseded by API via OkHttp Package
-    suspend fun fetchDataFromAPI(): String {
-        val url = URL("https://10.0.2.2/z") //?q=tags%3A%23blitz&enc=plain
-        val connection = url.openConnection() as HttpURLConnection
+class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
 
-        return try {
-            connection.requestMethod = "GET"
-            val responseCode = connection.responseCode
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                val inputStream = BufferedReader(InputStreamReader(connection.inputStream))
-                var inputLine: String?
-                val response = StringBuffer()
-
-                while (inputStream.readLine().also { inputLine = it } != null) {
-                    response.append(inputLine)
-                }
-                inputStream.close()
-
-                connection.disconnect()
-
-                response.toString()
-            } else {
-                "HTTP GET request failed: $responseCode"
-            }
-        } catch (e: Exception) {
-            e.toString()
-        } finally {
-            connection.disconnect()
-        }
-
-    }
+    constructor() : this("", "")
 
     //Gibt als Test einfach mal alle Zettel
     suspend fun testingAPI(): String? {
@@ -66,112 +36,133 @@ class Api() {
         return temp
     }
 
+    suspend fun postGenerateToken(username:String, pw:String):String? {
+        val base64_string = Base64.getEncoder().encodeToString(String.format("%s:%s", username, pw).toByteArray())
 
-
-    suspend fun postGenerateToken(username:String, hashpw:String)
-    {
         val client = OkHttpClient()
         val mediaType = "text/plain".toMediaType()
         val body = "".toRequestBody(mediaType)
         val request = Request.Builder()
-            .url(String.format("http://127.0.0.1:23123/a?username=%s&password=%s",username,hashpw))
+            .url("http://10.0.2.2:23123/a")
             .post(body)
+            .addHeader("Authorization", String.format("Basic %s", base64_string))
             .build()
         val response = client.newCall(request).execute()
 
+        if (response.code == 200)
+        {
+            val token_full = response.body?.string() // Kompletter Token mit "" & Klammern & Dauer wie lange er anhält
+            val token_short=token_full?.replace("(","")?.replace("\"","")?.replace(")","")?.replace("600","")
+            // Token_short kürz den String auf den richtigen aufbau
+
+            return token_short
+        }
+        if(response.code == 400)
+        {
+            return "400"
+        }
+        else{
+            return "temp"
+        }
     }
 
-    suspend fun renewToken(p_token:String)
-    {
-        val client = OkHttpClient()
-        val mediaType = "text/plain".toMediaType()
-        val body = "".toRequestBody(mediaType)
-        val request = Request.Builder()
-            .url(String.format("http://127.0.0.1:23123/a?Authorization=%s",p_token))
-            .put(body)
-            .build()
-        val response = client.newCall(request).execute()
-
-    }
-
-
-    suspend fun getAllBlitzTagsApi(): String? {
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("http://10.0.2.2:23123/z?q=tags%3A%23blitz") // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
-            .build()
-
-        val response = client.newCall(request).execute()
-        if (response.code == 200) {
-            val temp = response.body?.string()
-
-            return temp
-        }
-        if (response.code == 204) {
-            return "Keine Zettel vorhanden"
-        }
-        if (response.code == 400) {
-            return "Error 400, überprüfe ihre Verbindung"
-        }
-        return "test"
-    }
-
-    suspend fun getSpecificBlitzZettel(p_zID:String):String?
-    {
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url(String.format("http://10.0.2.2:23123/z/%s",p_zID)) // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
-            .build()
-
-        val response = client.newCall(request).execute()
-        if (response.code == 200) {
-            ///Wenn Request funktioniert und Zettel Inhalt hat
-            val temp = response.body?.string()
-
-            return temp
-        }
-        if (response.code == 204) {
-            /// Wenn Request funktioniert, aber kein Inhalt hat
-            return ""
-        }
-        if (response.code == 400) {
-            ///Falls keine Verbindung möglich, Zettel sollte immer vorhanden sein
-            ///da wir die Werte aus getAllBlitzTagsAPI nehmen
-            return "Error 400, überprüfe ihre Verbindung"
-        }
-        return "test"
-
-    }
-
-
-
-    suspend fun postZettelErstellen(p_titel: String, p_content: String): String {
-        val client = OkHttpClient()
-        val mediaType = "text/plain".toMediaType()
-        val body = String.format(
-            "title: %s\r\nrole: zettel\r\ntags: #blitz\r\nsyntax: zmk \r\nvisibility: login\r\n\r\n%s"
-            , p_titel, p_content
-        )
-
-        val request = Request.Builder()
-            .url("http://10.0.2.2:23123/z")
-            .post(body.toRequestBody(mediaType))
-            .addHeader("Content-Type", "text/plain")
-            .build()
-
-        return withContext(Dispatchers.IO) {
+        suspend fun renewToken() {
+            val client = OkHttpClient()
+            val mediaType = "text/plain".toMediaType()
+            val body = "".toRequestBody(mediaType)
+            val request = Request.Builder()
+                .url("http://10.0.2.2:23123/a")
+                .addHeader("Authorization", p_token)
+                .put(body)
+                .build()
             val response = client.newCall(request).execute()
 
-            // Überprüfen des Statuscodes und Rückgabe entsprechender Strings
-            when (response.code) {
-                201-> "Zettel erfolgreich erstellt"
-                400 -> "Ungültige Anfrage"//Syntax-Error
-                // Weitere Statuscodes hier behandeln
-                else -> ""
+        }
+
+
+        suspend fun getAllBlitzTagsApi(): String? {
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url("http://10.0.2.2:23123/z?q=tags%3A%23blitz")// Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
+                .addHeader("Authorization", p_token)
+                .build()
+
+            val response = client.newCall(request).execute()
+            if (response.code == 200) {
+                return response.body?.string()
+            }
+            if (response.code == 204) {
+                return "Keine Zettel vorhanden"
+            }
+            if (response.code == 400) {
+                return "Error 400, überprüfe ihre Verbindung"
+            }
+            return "test"
+        }
+
+        suspend fun getSpecificBlitzZettel(p_zID: String, ): String? {
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url(
+                    String.format(
+                        "http://10.0.2.2:23123/z/%s",
+                        p_zID
+                    )
+                ) // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
+                .addHeader("Authorization", p_token)
+                .build()
+
+
+            val response = client.newCall(request).execute()
+            if (response.code == 200) {
+                ///Wenn Request funktioniert und Zettel Inhalt hat
+                val temp = response.body?.string()
+
+                return temp
+            }
+            if (response.code == 204) {
+                /// Wenn Request funktioniert, aber kein Inhalt hat
+                return ""
+            }
+            if (response.code == 400) {
+                ///Falls keine Verbindung möglich, Zettel sollte immer vorhanden sein
+                ///da wir die Werte aus getAllBlitzTagsAPI nehmen
+                return "Error 400, überprüfe ihre Verbindung"
+            }
+            return "test"
+
+        }
+
+
+        suspend fun postZettelErstellen(p_titel: String, p_content: String, ): String {
+            val client = OkHttpClient()
+            val mediaType = "text/plain".toMediaType()
+            val body = String.format(
+                "title: %s\r\nrole: zettel\r\ntags: #blitz\r\nsyntax: zmk \r\nvisibility: login\r\n\r\n%s",
+                p_titel,
+                p_content
+            )
+
+            val request = Request.Builder()
+                .url("http://10.0.2.2:23123/z")
+                .post(body.toRequestBody(mediaType))
+                .addHeader("Content-Type", "text/plain")
+                .addHeader("Authorization", p_token)
+                .build()
+
+            return withContext(Dispatchers.IO) {
+                val response = client.newCall(request).execute()
+
+                // Überprüfen des Statuscodes und Rückgabe entsprechender Strings
+                when (response.code) {
+                    201 -> "Zettel erfolgreich erstellt"
+                    400 -> "Ungültige Anfrage"//Syntax-Error
+                    // Weitere Statuscodes hier behandeln
+                    else -> ""
+                }
             }
         }
     }
 
-}
 
 

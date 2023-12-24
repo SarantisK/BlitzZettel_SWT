@@ -7,8 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.blitzzettel.databinding.FragmentLoginBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * A simple [Fragment] subclass.
@@ -19,6 +25,7 @@ class LoginFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+    //private var token:String? = ""
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -35,8 +42,39 @@ class LoginFragment : Fragment() {
 
         sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
         val cred = EncryptedPrefsManager(requireContext())
+        binding.anmeldeButton.setOnClickListener{
 
-        if (isFirstTime()) {
+            // Hole alle Daten aus den Textfeldern
+
+            val nutzername = binding.editTextTextNutzername.text.toString()
+            val passwort = binding.editTextTextPassword.text.toString()
+            val serverId = binding.editTextServerid.text.toString()
+            val api = Api("",serverId)
+
+            lifecycleScope.launch {
+                // API-Aufruf für alle Blitzzettel
+                val token = withContext(Dispatchers.IO) {
+                    api.postGenerateToken(nutzername, passwort)
+                }
+
+                if (token != "400") {
+                    val sharedViewModel: SharedViewModel by activityViewModels()
+                    sharedViewModel.ServerIP = serverId
+                    sharedViewModel.BearerToken = token // Class Viewmodel den Token übergeben
+
+                    findNavController().navigate(R.id.action_loginFragment_to_HomeFragment)
+                } else {
+                    // Hier kommt die Fehlermeldung wenn der Server nicht erkannt ist oder die
+                    // anmeldedaten falsch sind.
+
+                }
+            }
+        }
+
+
+
+
+        /*if (isFirstTime()) {
             updateFirstTimeStatus()
             binding.anmeldeButton.setOnClickListener {
                 val nutzername = binding.editTextTextNutzername.text.toString()
@@ -45,13 +83,18 @@ class LoginFragment : Fragment() {
                 // API Abfrage (PostGenerateToken)
                 cred.saveCredentials(nutzername, passwort, serverId)
 
+
+
+
+
                 findNavController().navigate(R.id.action_loginFragment_to_HomeFragment)
             }
             // Nach Aktionen beim ersten Start, navigiere zu einem anderen Fragment
 
         } else {
+            cred.clearCredentials()
             navigateToHomeIfCredentialsExist()
-        }
+        }*/
 
 
 /*
