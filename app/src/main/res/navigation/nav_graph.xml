@@ -18,8 +18,8 @@
             android:id="@+id/action_HomeFragment_self"
             app:destination="@id/HomeFragment" />
         <action
-            android:id="@+id/action_HomeFragment_to_settings2"
-            app:destination="@id/settings2" />
+            android:id="@+id/action_HomeFragment_to_settingsFragment"
+            app:destination="@id/SettingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
@@ -41,8 +41,13 @@
             app:destination="@id/HomeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/settings2"
-        android:name="com.example.blitzzettel.settings"
+        android:id="@+id/SettingsFragment"
+        android:name="com.example.blitzzettel.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_SettingsFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment" />
+    </fragment>
+
 </navigation>

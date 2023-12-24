@@ -1,14 +1,13 @@
 package com.example.blitzzettel
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.blitzzettel.databinding.FragmentLoginBinding
@@ -40,19 +39,24 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val cred = EncryptedPrefsManager(requireContext())
+        //sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val saveCred= EncryptedPrefsManager(requireContext())
         binding.anmeldeButton.setOnClickListener{
 
             // Hole alle Daten aus den Textfeldern
 
-            val nutzername = binding.editTextTextNutzername.text.toString()
-            val passwort = binding.editTextTextPassword.text.toString()
+            val nutzername = binding.editTexNutzername.text.toString()
+            val passwort = binding.editTextPasswort.text.toString()
             val serverId = binding.editTextServerid.text.toString()
             val api = Api("",serverId)
 
+            if (nutzername.isBlank() || passwort.isBlank() || serverId.isBlank()) {
+                Toast.makeText(requireContext(), "Alle Felder ausfüllen", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             lifecycleScope.launch {
-                // API-Aufruf für alle Blitzzettel
+                // API-Aufruf zur Authentifizierung
                 val token = withContext(Dispatchers.IO) {
                     api.postGenerateToken(nutzername, passwort)
                 }
@@ -61,14 +65,16 @@ class LoginFragment : Fragment() {
                     val sharedViewModel: SharedViewModel by activityViewModels()
                     sharedViewModel.ServerIP = serverId
                     sharedViewModel.BearerToken = token // Class Viewmodel den Token übergeben
+                    saveCred.saveCredentials(nutzername, passwort, serverId)
+
 
                     findNavController().navigate(R.id.action_loginFragment_to_HomeFragment)
                 } else {
-                    // Hier kommt die Fehlermeldung wenn der Server nicht erkannt ist oder die
-                    // anmeldedaten falsch sind.
-
+                    //Funktioniert noch nicht
+                    Toast.makeText(requireContext(), "Fehlgeschlagen", Toast.LENGTH_SHORT).show()
                 }
             }
+
         }
 
 

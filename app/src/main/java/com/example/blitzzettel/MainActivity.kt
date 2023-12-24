@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             if (enteredPassword == passwort) {
                 val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
                 val navController = navHostFragment.navController
-                navController.navigate(R.id.action_HomeFragment_to_settings2)
+                navController.navigate(R.id.action_HomeFragment_to_settingsFragment)
             } else {
                 Toast.makeText(this, "Falsches Passwort", Toast.LENGTH_SHORT).show()
             }

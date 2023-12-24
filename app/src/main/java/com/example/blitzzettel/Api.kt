@@ -61,6 +61,11 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
         {
             return "400"
         }
+        if(response.code == 403)
+        {
+            return "403"
+        }
+
         else{
             return "temp"
         }

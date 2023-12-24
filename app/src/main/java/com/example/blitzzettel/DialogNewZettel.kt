@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -38,11 +39,17 @@ class NewBlitzNoteDialogFragment : DialogFragment() {
             val newTitel = blitzTitel.text.toString()
             val newContent= blitzContent.text.toString()
 
-            lifecycleScope.launch {
-                val feedback = api.postZettelErstellen(newTitel, newContent)
-                // Anzeigen des Feedbacks im TextView
-                feedbackTextView.text = feedback
+            if (newTitel.isBlank()) {
+                Toast.makeText(requireContext(), "Titel hinzufügen", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            lifecycleScope.launch {
+                val feedback = api.postZettelErstellen(newTitel, newContent).toString()
+                // Anzeigen des Feedbacks im TextView
+                Toast.makeText(requireContext(), feedback, Toast.LENGTH_SHORT).show()
+            }
+
             blitzTitel.text.clear()
             blitzContent.text.clear()
 

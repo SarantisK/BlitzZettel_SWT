@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.blitzzettel.databinding.FragmentSecondBinding
@@ -18,7 +19,8 @@ import kotlinx.coroutines.withContext
 class SecondFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null
-    private val api = Api()
+
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -44,9 +46,12 @@ class SecondFragment : Fragment() {
         binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_SecondFragment_to_HomeFragment)
         }
+        val viewModel:SharedViewModel by activityViewModels()
+        val api = Api(viewModel.BearerToken.toString(),viewModel.ServerIP)
 
         // Mit Coroutines die Daten asynchron laden und anzeigen
         lifecycleScope.launch {
+
 
             // API-Aufruf, um einen spezifischen Blitz-Zettel abzurufen
             val responseData = withContext(Dispatchers.IO) {
