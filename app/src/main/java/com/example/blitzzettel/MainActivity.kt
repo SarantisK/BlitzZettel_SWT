@@ -1,5 +1,6 @@
 package com.example.blitzzettel
 
+import android.app.AlertDialog
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +10,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
+import android.widget.Toast
 import com.example.blitzzettel.databinding.ActivityMainBinding
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,15 +46,52 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.settings -> findNavController(R.id.settings)
+        return when (item.itemId) {
+            R.id.settings -> {
+                val (_, savedPassword, _) = encryptedPrefsManager.getCredentials()
+                showPasswordDialogForSettings(savedPassword)
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
         }
-        return true
     }
+
+    private val encryptedPrefsManager by lazy { EncryptedPrefsManager(this) }
+
+
+
+
+    fun showPasswordDialogForSettings(passwort: String?) {
+        val builder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.dialog_password, null)
+        builder.setView(dialogLayout)
+        builder.setTitle("Passwort eingeben um zu den Einstellungen zu gelangen.")
+
+        builder.setPositiveButton("Bestätigen") { _, _ ->
+            val enteredPassword = dialogLayout.findViewById<EditText>(R.id.EditTextPassword).text.toString()
+            if (enteredPassword == passwort) {
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+                val navController = navHostFragment.navController
+                navController.navigate(R.id.action_HomeFragment_to_settings2)
+            } else {
+                Toast.makeText(this, "Falsches Passwort", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        builder.setNegativeButton("Abbrechen") { dialog, _ ->
+            dialog.cancel()
+        }
+
+        builder.setCancelable(false)
+        builder.show()
+    }
+
+
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)

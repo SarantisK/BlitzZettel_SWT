@@ -1,7 +1,10 @@
 package com.example.blitzzettel
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.widget.EditText
+import android.widget.Toast
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
@@ -28,26 +31,31 @@ class EncryptedPrefsManager(context: Context) {
     }
 
     // Speichert die Anmeldeinformationen (Benutzername, Passwort, Server)
-    fun saveCredentials(username: String, password: String, server: String) {
+    fun saveCredentials(nutzername: String, passwort: String, serverID: String) {
         val editor = sharedPreferences.edit()
-        editor.putString("username", username)
-        editor.putString("password", password)
-        editor.putString("server", server)
+        editor.putString("nutzername", nutzername)
+        editor.putString("passwort", passwort)
+        editor.putString("serverID", serverID)
         editor.apply()
     }
 
+
     // Ruft die gespeicherten Anmeldeinformationen ab
     fun getCredentials(): Triple<String?, String?, String?> {
-        val username = sharedPreferences.getString("username", null)
-        val password = sharedPreferences.getString("password", null)
-        val server = sharedPreferences.getString("server", null)
-        return Triple(username, password, server)
+        val nutzername = sharedPreferences.getString("nutzername", null)
+        val passwort = sharedPreferences.getString("passwort", null)
+        val serverID = sharedPreferences.getString("serverID", null)
+        return Triple(nutzername, passwort, serverID)
     }
 
-    fun clearCredentials(){
-        sharedPreferences.edit().clear()
-        sharedPreferences.edit().apply()
+    fun clearCredentials() {
+        val editor = sharedPreferences.edit()
+        editor.remove("nutzername")
+        editor.remove("passwort")
+        editor.remove("serverID")
+        editor.apply()
     }
+
 
     companion object {
         private val prefsName = "my_prefs" // Name für verschlüsselte SharedPreferences
@@ -62,9 +70,10 @@ class EncryptedPrefsManager(context: Context) {
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
-            return sharedPreferences.contains("username") &&
-                    sharedPreferences.contains("password") &&
-                    sharedPreferences.contains("server")
+            return sharedPreferences.contains("nutzername") &&
+                    sharedPreferences.contains("passwort") &&
+                    sharedPreferences.contains("serverID")
         }
     }
 }
+
