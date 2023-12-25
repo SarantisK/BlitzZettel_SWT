@@ -64,6 +64,9 @@ class LoginFragment : Fragment() {
     private fun autoLogin() {
         val (nutzername, passwort, serverId) = encryptedPrefsManager.getCredentials()
         performLogin(nutzername ?: "", passwort ?: "", serverId ?: "")
+        binding.editTexNutzername.setText(nutzername)
+        binding.editTextPasswort.setText(passwort)
+        binding.editTextServerid.setText(serverId)
     }
 
 
