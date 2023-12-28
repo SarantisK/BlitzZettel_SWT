@@ -43,10 +43,10 @@ class LoginFragment : Fragment() {
 
         if (isFirstTime()) {
             updateFirstTimeStatus()
-            setupLoginListener()
         } else {
             autoLogin()
         }
+        setupLoginListener()
     }
 
     private fun setupLoginListener() {
@@ -76,20 +76,46 @@ class LoginFragment : Fragment() {
             val token = withContext(Dispatchers.IO) {
                 api.postGenerateToken(nutzername, passwort)
             }
+            withContext(Dispatchers.Main) {
+                processLoginResponse(token, nutzername, passwort, serverId)
+            }
+        }
+    }
+    private fun processLoginResponse(token: String?, nutzername: String, passwort: String, serverId: String) {
 
-            if (token != "400" && token != "403") {
+        when (token) {
+            "Netzwerkfehler" -> Toast.makeText(requireContext(), "Netzwerkfehler: Verfügbarkeit" +
+                    " des Zettelstores prüfen", Toast.LENGTH_SHORT).show()
+
+            "400" -> Toast.makeText(requireContext(),"Formulardaten ungültig", Toast.LENGTH_SHORT)
+                .show()
+
+            "401" -> Toast.makeText(requireContext(),"Benutzer-ID oder Passwort falsch", Toast.LENGTH_SHORT)
+                .show()
+
+            "403" -> Toast.makeText(requireContext(),"Authentifizierung nicht aktiv: " +
+                    "Im Zettelstore einrichten", Toast.LENGTH_SHORT)
+                .show()
+
+            "Unbekannter Fehler" -> Toast.makeText(requireContext(),"Unbekannter Fehler", Toast.LENGTH_SHORT)
+                .show()
+
+            else -> {
+                // Erfolgreich angemeldet
+                Toast.makeText(requireContext(), "Erfolgreich angemeldet", Toast.LENGTH_SHORT)
+                    .show()
                 findNavController().navigate(R.id.action_loginFragment_to_HomeFragment)
+                // Speichern des Tokens und weiterer notwendiger Daten
                 val sharedViewModel: SharedViewModel by activityViewModels()
                 sharedViewModel.ServerIP = serverId
                 sharedViewModel.BearerToken = token
                 encryptedPrefsManager.saveCredentials(nutzername, passwort, serverId)
-                Toast.makeText(requireContext(), "Erfolgreich Angemeldet", Toast.LENGTH_SHORT).show()
-
-            } else {
-                Toast.makeText(requireContext(), "Fehlgeschlagen", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Erfolgreich Angemeldet", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
+
 
 
     private fun validateInputs(nutzername: String, passwort: String, serverId: String): Boolean {

@@ -64,34 +64,47 @@ class SettingsFragment : Fragment() {
                     "Passwörter stimmen nicht überein",
                     Toast.LENGTH_SHORT
                 ).show()
-                neuesPasswortWdhl
                 return@setOnClickListener
             }
 
-            val api = Api("", neueServerId)
+            performUpdate(neuerNutzername, neuesPasswort, neueServerId)
+        }
+    }
 
-            lifecycleScope.launch {
-                // API-Aufruf zur Authentifizierung
-                val token = withContext(Dispatchers.IO) {
-                    api.postGenerateToken(neuerNutzername, neuesPasswort)
-                }
+    private fun performUpdate(neuerNutzername: String, neuesPasswort: String, neueServerId: String) {
+        val api = Api("", neueServerId)
+        lifecycleScope.launch {
+            val token = withContext(Dispatchers.IO) {
+                api.postGenerateToken(neuerNutzername, neuesPasswort)
+            }
+            processResponse(token, neuerNutzername, neuesPasswort, neueServerId)
+        }
+    }
 
-                if (token != "400") {
-                    val sharedViewModel: SharedViewModel by activityViewModels()
-                    sharedViewModel.ServerIP = neueServerId
-                    sharedViewModel.BearerToken = token // Class Viewmodel den Token übergeben
-                    saveCred.saveCredentials(neuerNutzername, neuesPasswort, neueServerId)
-                    Toast.makeText(requireContext(),
-                        "Anmeldeinformationen aktualisiert",
-                        Toast.LENGTH_SHORT
-                    ).show()
+    private fun processResponse(
+        token: String?,
+        neuerNutzername: String,
+        neuesPasswort: String,
+        neueServerId: String
+    ) {
+        val api = Api("", neueServerId)
+        when (token) {
+            "Netzwerkfehler", "400", "401", "403", "Unbekannter Fehler" -> {
+                Toast.makeText(requireContext(), api.getErrorMessage(token), Toast.LENGTH_SHORT).show()
+            }
 
-                } else {
-                    Toast.makeText(requireContext(), "Fehlgeschlagen", Toast.LENGTH_SHORT).show()
-                }
-
+            else -> {
+                // Erfolgreich angemeldet
+                val saveCred = EncryptedPrefsManager(requireContext())
+                saveCred.saveCredentials(neuerNutzername, neuesPasswort, neueServerId)
+                Toast.makeText(requireContext(), "Anmeldeinformationen aktualisiert", Toast.LENGTH_SHORT)
+                    .show()
+                val sharedViewModel: SharedViewModel by activityViewModels()
+                sharedViewModel.ServerIP = neueServerId
+                sharedViewModel.BearerToken = token
                 findNavController().navigate(R.id.action_SettingsFragment_to_HomeFragment)
             }
         }
     }
+
 }

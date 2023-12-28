@@ -5,17 +5,10 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+
 import java.util.Base64
 
-import androidx.lifecycle.ViewModelProvider
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.activity.viewModels
-import androidx.lifecycle.ViewModel
+
 
 
 class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
@@ -36,40 +29,52 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
         return temp
     }
 
-    suspend fun postGenerateToken(username:String, pw:String):String? {
-        val base64_string = Base64.getEncoder().encodeToString(String.format("%s:%s", username, pw).toByteArray())
+    fun postGenerateToken(username:String, pw:String):String? {
+        try {
+            val base64_string = Base64.getEncoder()
+                .encodeToString(String.format("%s:%s", username, pw).toByteArray())
 
-        val client = OkHttpClient()
-        val mediaType = "text/plain".toMediaType()
-        val body = "".toRequestBody(mediaType)
-        val request = Request.Builder()
-            .url("http://10.0.2.2:23123/a")
-            .post(body)
-            .addHeader("Authorization", String.format("Basic %s", base64_string))
-            .build()
-        val response = client.newCall(request).execute()
+            val client = OkHttpClient()
+            val mediaType = "text/plain".toMediaType()
+            val body = "".toRequestBody(mediaType)
+            val request = Request.Builder()
+                .url("http://10.0.2.2:23123/a")
+                .post(body)
+                .addHeader("Authorization", String.format("Basic %s", base64_string))
+                .build()
+            val response = client.newCall(request).execute()
 
-        if (response.code == 200)
-        {
-            val token_full = response.body?.string() // Kompletter Token mit "" & Klammern & Dauer wie lange er anhält
-            val token_short=token_full?.replace("(","")?.replace("\"","")?.replace(")","")?.replace("600","")
-            // Token_short kürz den String auf den richtigen aufbau
+            if (response.code == 200) {
+                val token_full =
+                    response.body?.string() // Kompletter Token mit "" & Klammern & Dauer wie lange er anhält
+                val token_short = token_full?.replace("(", "")?.replace("\"", "")?.replace(")", "")
+                    ?.replace("600", "")
+                // Token_short kürz den String auf den richtigen aufbau
 
-            return token_short
-        }
-        if(response.code == 400)
-        {
-            return "400"
-        }
-        if(response.code == 403)
-        {
-            return "403"
-        }
-
-        else{
-            return "temp"
+                return token_short
+            }
+            return when (response.code) {
+                400 -> "400" //"Form data invalid"
+                401 -> "401" //"Benutzer-ID oder Passwort falsch"
+                403 -> "403" //Authentifizierung nicht aktiv"
+                else -> "Unbekannter Fehler"
+            }
+        } catch (e: Exception) {
+            return "Netzwerkfehler"
         }
     }
+
+    fun getErrorMessage(errorCode: String?): String {
+        return when (errorCode) {
+            "Netzwerkfehler" -> "Netzwerkfehler: Verfügbarkeit des Zettelstores prüfen"
+            "400" -> "Formulardaten ungültig"
+            "401" -> "Benutzer-ID oder Passwort falsch"
+            "403" -> "Authentifizierung nicht aktiv: Im Zettelstore einrichten"
+            "Unbekannter Fehler" -> "Unbekannter Fehler"
+            else -> "Ein Fehler ist aufgetreten"
+        }
+    }
+
 
         suspend fun renewToken() {
             val client = OkHttpClient()
