@@ -18,15 +18,16 @@ import kotlinx.coroutines.withContext
 
 
 /**
- * A simple [Fragment] subclass as the default destination in the navigation.
+ * HomeFragment stellt die Hauptansicht der Anwendung dar. Es zeigt eine Liste von Zetteln an und
+ * ermöglicht dem Benutzer, neue Zettel hinzuzufügen oder vorhandene zu betrachten.
  */
 class HomeFragment : Fragment() {
 
+    // Binding-Variable für den Zugriff auf die Views
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-     // Holt sich die Daten aus dem Viewmodel
-
+    // Layout des Fragments inflaten
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,46 +40,45 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Verwendung des SharedViewModels zur Verwaltung des Zustands und der Daten zwischen den Fragments
         val viewModel:SharedViewModel by activityViewModels()
 
+        // API-Instanz wird erstellt
         val api = Api(viewModel.BearerToken.toString(),viewModel.ServerIP)
 
         // Initialisieren des Adapters mit einer leeren Liste
         val adapter = ZettelAdapter(emptyList()) { zettel ->
-            // Bei Klick auf einem Zettel wird zum SecondFragment navigiert
-            // und die Zettel-ID übergeben
+            // Bei Klick auf einem Zettel wird zum SecondFragment navigiert und die Zettel-ID übergeben
             val bundle = bundleOf("zettelId" to zettel.id)
             findNavController().navigate(R.id.action_HomeFragment_to_SecondFragment, bundle)
         }
 
-        // RecyclerView initialisieren
+        // Initialisiert den Layoutmanager und Adapter der RrcyclerView
         binding.myRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.myRecyclerView.adapter = adapter
 
         // Daten laden und Adapter aktualisieren mit API-Daten
         lifecycleScope.launch {
-            // API-Aufruf für alle Blitzzettel
+            // API-Aufruf für alle Blitzzettel im Hintergrund-Thread
             val responseData = withContext(Dispatchers.IO) {
                 api.getAllBlitzTagsApi()
             }
             // Parsen der Daten als Liste von Zettel-Objekten
             val zettelList = parseZettelListApi(responseData.toString())
 
-            // Aktualisieren des Adapters auf dem Hauptthread mit Zettel-Liste
+            // Aktualisieren des Adapters im Haupt-Thread mit Zettel-Liste
             withContext(Dispatchers.Main) {
                 adapter.zettelList = zettelList
                 adapter.notifyDataSetChanged()
             }
         }
 
-
+        // Listener für den Button, um den Dialog zum Hinzufügen neuer Zettel anzuzeigen
         binding.button.setOnClickListener {
             NewBlitzNoteDialogFragment().show(
                 childFragmentManager, NewBlitzNoteDialogFragment.TAG
             )
         }
-        // Aufruf des Dialogs beim Klick auf einen Button oder einer anderen Aktion
-
     }
 }
 

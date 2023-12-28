@@ -1,10 +1,13 @@
 package com.example.blitzzettel
 
 
-// Datenklasse zur Darstellung der Zettel
+/**
+ * Zettel ist eine Datenklasse, die einen Zettel repräsentiert.
+ * Sie hält die ID und den Titel des Zettels.
+ */
 data class Zettel(val id: String, val title: String) //val content: String
 
-// Funktion zum Verarbeiten der empfangenen Daten
+// Funktion zum Verarbeiten der empfangenen Daten und wandelt sie in eine Liste von Zettel-Objekten um
 fun parseZettelListApi(responseData: String): List<Zettel> {
     val zettelList = mutableListOf<Zettel>() // EIne Liste aus der Klasse Zettel
 
@@ -25,8 +28,4 @@ fun parseZettelListApi(responseData: String): List<Zettel> {
     return zettelList
 }
 
-// Funktion zum Verarbeiten der empfangenen Daten
-fun parseZettelDataSendblitz(){
-
-}
 
