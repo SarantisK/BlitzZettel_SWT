@@ -9,7 +9,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.Base64
 
 
-
+//Alle API-Aufrufe werden in dieser API-Klasse gespeichert
 
 class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
 
@@ -28,7 +28,8 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
         val temp = response.body?.string()
         return temp
     }
-
+    //Funktion, um einen Authentifizerungstoken anhand vom Usernamen
+    //und Passwort zu generieren.
     fun postGenerateToken(username:String, pw:String):String? {
         try {
             val base64_string = Base64.getEncoder()
@@ -64,6 +65,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
         }
     }
 
+    //Funktion, um Fehlermeldungen basierend auf dem Fehlercode anzuzeigen
     fun getErrorMessage(errorCode: String?): String {
         return when (errorCode) {
             "Netzwerkfehler" -> "Netzwerkfehler: Verfügbarkeit des Zettelstores prüfen"
@@ -76,6 +78,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
     }
 
 
+        //Funktion, um Authentifizerungstoken zu erneuern
         suspend fun renewToken() {
             val client = OkHttpClient()
             val mediaType = "text/plain".toMediaType()
@@ -89,7 +92,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
 
         }
 
-
+    //Funktion, um alle Zettel mit #blitz über die API aufzurufen
         suspend fun getAllBlitzTagsApi(): String? {
             val client = OkHttpClient()
             val request = Request.Builder()
@@ -110,6 +113,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
             return "test"
         }
 
+    //Funktion, um spezifischen Blitzzettel anhand der Zettel-ID über die API aufzurufen
         suspend fun getSpecificBlitzZettel(p_zID: String, ): String? {
             val client = OkHttpClient()
             val request = Request.Builder()
@@ -143,7 +147,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
 
         }
 
-
+    //Funktion, um erstellte Blitzzettel in der App mittels API an den Zettelstore zu senden
         suspend fun postZettelErstellen(p_titel: String, p_content: String, ): String {
             val client = OkHttpClient()
             val mediaType = "text/plain".toMediaType()

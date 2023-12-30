@@ -12,62 +12,66 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 
-
+//Hier werden die neuen Zettel erstellt mittels AlertDialog
 class NewBlitzNoteDialogFragment : DialogFragment() {
 
-
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // Einrichten des AlertDialog-Builders
         val builder = AlertDialog.Builder(requireContext())
 
-        val viewModel:SharedViewModel by activityViewModels()
-        val api = Api(viewModel.BearerToken.toString(),viewModel.ServerIP)
-        // Inflate the custom layout for the dialog
+        // Initialisierung des SharedViewModels und der API-Klasse
+        val viewModel: SharedViewModel by activityViewModels()
+        val api = Api(viewModel.BearerToken.toString(), viewModel.ServerIP)
+
+        // Aufblasen des benutzerdefinierten Layouts für den Dialog
         val view = requireActivity().layoutInflater.inflate(R.layout.fragmen_dialog, null)
 
-        // Find views and perform actions
-        val blitzTitel= view.findViewById<EditText>(R.id.blitz_titel)
-        val blitzContent= view.findViewById<EditText>(R.id.blitz_content)
+        // Suchen von Ansichten und Ausführen von Aktionen
+        val blitzTitel = view.findViewById<EditText>(R.id.blitz_titel)
+        val blitzContent = view.findViewById<EditText>(R.id.blitz_content)
         val addButton = view.findViewById<Button>(R.id.addButton)
         val cancelButton = view.findViewById<Button>(R.id.cancelButton)
         val feedbackTextView = view.findViewById<TextView>(R.id.feedback)
 
-        // Define actions for the buttons
+        // Definieren von Aktionen für die Schaltflächen
         addButton.setOnClickListener {
-            // Perform action when Add button is clicked
-            // For example, get text from EditText and handle it
+            // Aktion beim Klicken der Hinzufügen-Schaltfläche ausführen
+            // Beispielsweise Text aus EditText abrufen und verarbeiten
             val newTitel = blitzTitel.text.toString()
-            val newContent= blitzContent.text.toString()
+            val newContent = blitzContent.text.toString()
 
+            // Überprüfen, ob der Titel leer ist
             if (newTitel.isBlank()) {
                 Toast.makeText(requireContext(), "Titel hinzufügen", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // Aufruf der API, um eine neue Blitznotiz zu erstellen
             lifecycleScope.launch {
                 val feedback = api.postZettelErstellen(newTitel, newContent).toString()
-                // Anzeigen des Feedbacks im TextView
+                // Feedback in einem Toast anzeigen
                 Toast.makeText(requireContext(), feedback, Toast.LENGTH_SHORT).show()
             }
 
+            // Textfelder leeren
             blitzTitel.text.clear()
             blitzContent.text.clear()
-
         }
 
         cancelButton.setOnClickListener {
-            // Perform action when Cancel button is clicked
-            findNavController().navigate(R.id.action_HomeFragment_self) // Navigation auf Home Fenster für refresh der Zettel
-            dismiss() // Dismiss the dialog
+            // Aktion beim Klicken der Abbrechen-Schaltfläche ausführen
+            findNavController().navigate(R.id.action_HomeFragment_self) // Navigation zur Startseite zur Aktualisierung der Notizen
+            dismiss() // Dialog schließen
         }
 
-        // Set the custom view to the dialog
+        // Benutzerdefinierte Ansicht zum Dialog hinzufügen
         builder.setView(view)
 
-        return builder.create()
+        return builder.create() // Erstellen und Rückgabe des Dialogs
     }
 
     companion object {
         const val TAG = "NewBlitzNoteDialog"
     }
 }
+

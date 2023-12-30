@@ -25,12 +25,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //Verknüpfung der Binding-Klasse mit dem Layout
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        //Toolbar als Action Bar setzen
         setSupportActionBar(binding.toolbar)
 
+        //Konfiguration der App-Leiste
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         appBarConfiguration = AppBarConfiguration(setOf())
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -40,14 +42,14 @@ class MainActivity : AppCompatActivity() {
         //    .setAction("Action", null).show()
         // }
     }
+    //Hinzufügen von Elementen zur Action Bar, falls vorhanden
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-
-
-
+    //Beim Anklicken des Einstellungsicons wird das gespeicherte Passwort
+    //aufgerufen und in der Funktion showPasswordDialogForSettings als Parameter
+    //gespeichert
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.settings -> {
@@ -63,8 +65,9 @@ class MainActivity : AppCompatActivity() {
     private val encryptedPrefsManager by lazy { EncryptedPrefsManager(this) }
 
 
-
-
+    //Vergleicht eingegebenes Passwort mit gespeichertem Passwort.
+    //Wenn gleich wird man auf die Einstellungen weitergeleitet, wenn nicht
+    //erscheint eine Toast-Message.
     fun showPasswordDialogForSettings(passwort: String?) {
         val builder = AlertDialog.Builder(this)
         val inflater = layoutInflater
@@ -89,14 +92,6 @@ class MainActivity : AppCompatActivity() {
 
         builder.setCancelable(false)
         builder.show()
-    }
-
-
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
     }
 }
 
