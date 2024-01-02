@@ -36,8 +36,7 @@ class ZettelAdapter(var zettelList: List<Zettel>, private val onClick: (Zettel) 
         // Holt den Zettel, der an dieser Position dargestellt wird
         val zettel = zettelList[position]
 
-        // Setzt den Titel des Zettels in die TextView des ViewHolders
-        holder.titleView.text = "${zettel.title}   >"
+        holder.titleView.text = "${zettel.title}"
 
         // Setzt einen Click-Listener auf die titleView-View, um die onClick-Funktion auszulösen.
         // Das entsprechenden Zettel-Objekt wird der onClick Funktion als Argument übergeben.

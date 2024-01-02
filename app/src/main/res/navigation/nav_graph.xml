@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/HomeFragment"
         android:name="com.example.blitzzettel.HomeFragment"
-        android:label="@string/home_fragment_label"
         tools:layout="@layout/fragment_home">
 
         <action
@@ -24,7 +23,6 @@
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.example.blitzzettel.SecondFragment"
-        android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 
         <action
@@ -34,7 +32,6 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.blitzzettel.LoginFragment"
-        android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_HomeFragment"
