@@ -15,6 +15,8 @@ import com.example.blitzzettel.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.widget.Toast
+
 
 
 /**
@@ -41,10 +43,10 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Verwendung des SharedViewModels zur Verwaltung des Zustands und der Daten zwischen den Fragments
-        val viewModel:SharedViewModel by activityViewModels()
+        val viewModel: SharedViewModel by activityViewModels()
 
         // API-Instanz wird erstellt
-        val api = Api(viewModel.BearerToken.toString(),viewModel.ServerIP)
+        val api = Api(viewModel.BearerToken.toString(), viewModel.ServerIP)
 
         // Initialisieren des Adapters mit einer leeren Liste
         val adapter = ZettelAdapter(emptyList()) { zettel ->
@@ -63,13 +65,24 @@ class HomeFragment : Fragment() {
             val responseData = withContext(Dispatchers.IO) {
                 api.getAllBlitzTagsApi()
             }
-            // Parsen der Daten als Liste von Zettel-Objekten
-            val zettelList = parseZettelListApi(responseData.toString())
 
-            // Aktualisieren des Adapters im Haupt-Thread mit Zettel-Liste
-            withContext(Dispatchers.Main) {
-                adapter.zettelList = zettelList
-                adapter.notifyDataSetChanged()
+            // Werte den API-Aufruf aus und zeige entsprechende Toast-Nachrichten an
+            when (responseData) {
+                null -> showToast("Fehler bei der API-Anfrage")
+                "Keine Zettel vorhanden" -> showToast("Keine Zettel vorhanden")
+                "Error 400, überprüfe ihre Verbindung" -> showToast("Fehler 400, überprüfe deine Verbindung")
+                "test" -> showToast("Testfehler")
+                "Netzwerkfehler" -> showToast("Netzwerkfehler: Verfügbarkeit des Zettelstores prüfen")
+                else -> {
+                    // Parsen der Daten als Liste von Zettel-Objekten
+                    val zettelList = parseZettelListApi(responseData.toString())
+
+                    // Aktualisieren des Adapters im Haupt-Thread mit Zettel-Liste
+                    withContext(Dispatchers.Main) {
+                        adapter.zettelList = zettelList
+                        adapter.notifyDataSetChanged()
+                    }
+                }
             }
         }
 
@@ -80,5 +93,21 @@ class HomeFragment : Fragment() {
             )
         }
     }
+
+
+    private fun showToast(message: String) {
+        // Zeige ein Toast mit der angegebenen Nachricht an
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }
+
+
+
+
 

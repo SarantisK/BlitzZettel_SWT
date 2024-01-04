@@ -94,6 +94,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
 
     //Funktion, um alle Zettel mit #blitz über die API aufzurufen
         suspend fun getAllBlitzTagsApi(): String? {
+        try {
             val client = OkHttpClient()
             val request = Request.Builder()
                 .url("http://10.0.2.2:23123/z?q=tags%3A%23blitz")// Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
@@ -111,8 +112,10 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
                 return "Error 400, überprüfe ihre Verbindung"
             }
             return "test"
+        } catch (e: Exception) {
+            return "Netzwerkfehler"
         }
-
+    }
     //Funktion, um spezifischen Blitzzettel anhand der Zettel-ID über die API aufzurufen
         suspend fun getSpecificBlitzZettel(p_zID: String, ): String? {
             val client = OkHttpClient()
