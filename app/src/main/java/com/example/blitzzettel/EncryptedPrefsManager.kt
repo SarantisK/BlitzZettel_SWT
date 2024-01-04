@@ -43,6 +43,12 @@ class EncryptedPrefsManager(context: Context) {
         editor.apply() // Speichert die Änderungen
     }
 
+    fun clearLoginData() {
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.commit()
+        // or editor.commit() if you want to wait for the write to be complete
+    }
 
     // Ruft die gespeicherten Anmeldeinformationen ab
     fun getCredentials(): Triple<String?, String?, String?> {

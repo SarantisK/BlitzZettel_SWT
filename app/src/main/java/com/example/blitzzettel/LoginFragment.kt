@@ -51,13 +51,16 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // Überprüfen, ob es der erste Start der App ist und aktualisiert den Zustand.
         if (isFirstTime()) {
-            updateFirstTimeStatus()
+            // Ein Listener, um auf den Anmeldeversuch zu reagieren.
+            setupLoginListener()
+
         } else {
             // Automatische Anmeldung, falls nicht erster Start vorliegt
             autoLogin()
+
         }
-        // Ein Listener, um auf den Anmeldeversuch zu reagieren.
         setupLoginListener()
+
     }
 
     // Konfiguration des Klick-Listeners für den Anmeldebutton.
@@ -71,6 +74,7 @@ class LoginFragment : Fragment() {
             // Überprüft die Eingaben und führt bei Gültigkeit die Anmeldung durch
             if (validateInputs(nutzername, passwort, serverId)) {
                 performLogin(nutzername, passwort, serverId)
+                updateFirstTimeStatus()
             }
         }
     }
@@ -142,6 +146,7 @@ class LoginFragment : Fragment() {
                 sharedViewModel.ServerIP = serverId
                 sharedViewModel.BearerToken = token
                 encryptedPrefsManager.saveCredentials(nutzername, passwort, serverId)
+                encryptedPrefsManager
 
                 // Erfolgreiche Anmeldung dem Benutzer anzeigen
                 Toast.makeText(requireContext(), "Erfolgreich Angemeldet", Toast.LENGTH_SHORT)

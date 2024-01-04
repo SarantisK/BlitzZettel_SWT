@@ -11,7 +11,7 @@ import java.util.Base64
 
 //Alle API-Aufrufe werden in dieser API-Klasse gespeichert
 
-class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
+class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2:23123") {
 
     constructor() : this("", "")
 
@@ -39,7 +39,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
             val mediaType = "text/plain".toMediaType()
             val body = "".toRequestBody(mediaType)
             val request = Request.Builder()
-                .url("http://10.0.2.2:23123/a")
+                .url(String.format("http://%s/a",ServerIP))
                 .post(body)
                 .addHeader("Authorization", String.format("Basic %s", base64_string))
                 .build()
@@ -84,7 +84,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
             val mediaType = "text/plain".toMediaType()
             val body = "".toRequestBody(mediaType)
             val request = Request.Builder()
-                .url("http://10.0.2.2:23123/a")
+                .url(String.format("http://%s/a"))
                 .addHeader("Authorization", p_token)
                 .put(body)
                 .build()
@@ -97,7 +97,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
         try {
             val client = OkHttpClient()
             val request = Request.Builder()
-                .url("http://10.0.2.2:23123/z?q=tags%3A%23blitz")// Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
+                .url(String.format("http://%s/%s",ServerIP,"z?q=tags%3A%23blitz"))// Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
                 .addHeader("Authorization", p_token)
                 .build()
 
@@ -121,11 +121,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
             val client = OkHttpClient()
             val request = Request.Builder()
                 .url(
-                    String.format(
-                        "http://10.0.2.2:23123/z/%s",
-                        p_zID
-                    )
-                ) // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
+                    String.format("http://%s/z/%s",ServerIP,p_zID)) // Statt Localhost muss 10.0.2.2 Angegeben werden, im Emulator wird das als Localhost angesehen.
                 .addHeader("Authorization", p_token)
                 .build()
 
@@ -161,7 +157,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2") {
             )
 
             val request = Request.Builder()
-                .url("http://10.0.2.2:23123/z")
+                .url(String.format("http://%s/z",ServerIP))
                 .post(body.toRequestBody(mediaType))
                 .addHeader("Content-Type", "text/plain")
                 .addHeader("Authorization", p_token)

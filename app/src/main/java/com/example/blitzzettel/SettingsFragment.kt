@@ -1,5 +1,7 @@
 package com.example.blitzzettel
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -23,12 +25,18 @@ class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
+    // SharedPreferences für das Speichern des ersten Login-Zustands
+    private lateinit var sharedPreferences: SharedPreferences
+    // Manager für verschlüsselte Einstellungen zur sicheren Speicherung von Anmeldeinformationen
+    private lateinit var encryptedPrefsManager: EncryptedPrefsManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        encryptedPrefsManager = EncryptedPrefsManager(requireContext())
         return binding.root
     }
 
@@ -69,6 +77,11 @@ class SettingsFragment : Fragment() {
 
             performUpdate(neuerNutzername, neuesPasswort, neueServerId)
         }
+        binding.resetButton.setOnClickListener {
+
+            resetAutoLogin()
+
+        }
     }
 
     private fun performUpdate(neuerNutzername: String, neuesPasswort: String, neueServerId: String) {
@@ -106,5 +119,15 @@ class SettingsFragment : Fragment() {
             }
         }
     }
+    private fun resetAutoLogin()
+    {
+        //resete den First Login Boolean
+        sharedPreferences.edit().putBoolean("firstTime", true).apply()
 
+        encryptedPrefsManager.clearLoginData()
+
+        Toast.makeText(requireContext(), "Automatische Anmeldung wurde zurückgesetzt", Toast.LENGTH_SHORT).show()
+        //zwingt app nun bei neustart in loginfenster, wo Login PW und ID erneut eingegeben werden müssen
+
+    }
 }

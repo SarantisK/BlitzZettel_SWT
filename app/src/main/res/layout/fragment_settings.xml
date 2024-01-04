@@ -78,5 +78,12 @@
             android:layout_marginTop="24dp"
             android:text="Aktualisieren"/>
 
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Auto Login Reset" />
+
     </LinearLayout>
 </FrameLayout>
