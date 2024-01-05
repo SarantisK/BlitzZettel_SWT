@@ -88,8 +88,12 @@ class HomeFragment : Fragment() {
 
         // Listener für den Button, um den Dialog zum Hinzufügen neuer Zettel anzuzeigen
         binding.button.setOnClickListener {
+            // Erstellen einer neuen Instanz des NewBlitzNoteDialogFragment
             NewBlitzNoteDialogFragment().show(
-                childFragmentManager, NewBlitzNoteDialogFragment.TAG
+                // Verwenden des Child Fragment Managers, um das Dialogfragment anzuzeigen
+                childFragmentManager,
+                // Verwenden des TAGs aus dem NewBlitzNoteDialogFragment für die Fragment-Transaktion
+                NewBlitzNoteDialogFragment.TAG
             )
         }
     }
