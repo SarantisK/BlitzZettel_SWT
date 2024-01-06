@@ -41,13 +41,14 @@ class SecondFragment : Fragment() {
 
         // Zettel-ID, die von HomeFragment übergeben wurde
         val zettelId = arguments?.getString("zettelId")
+        val viewModel:SharedViewModel by activityViewModels()
+        val api = Api(viewModel.BearerToken.toString(),viewModel.ServerIP)
 
         // Auf Button "buttonSecond" geklickt, dann zum HomeFragment navigieren
         binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_SecondFragment_to_HomeFragment)
         }
-        val viewModel:SharedViewModel by activityViewModels()
-        val api = Api(viewModel.BearerToken.toString(),viewModel.ServerIP)
+
 
         // Mit Coroutines die Daten asynchron laden und anzeigen
         lifecycleScope.launch {

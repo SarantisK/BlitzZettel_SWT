@@ -1,6 +1,7 @@
 package com.example.blitzzettel
 
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.widget.Toast
-
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -60,6 +61,25 @@ class HomeFragment : Fragment() {
         binding.myRecyclerView.adapter = adapter
 
         // Daten laden und Adapter aktualisieren mit API-Daten
+        ShowBlitzZettel(api, adapter)
+
+
+        // Listener für den Button, um den Dialog zum Hinzufügen neuer Zettel anzuzeigen
+        binding.button.setOnClickListener {
+            NewBlitzNoteDialogFragment().show(
+                childFragmentManager, NewBlitzNoteDialogFragment.TAG
+            )
+        }
+
+    }
+
+    fun showToast(message: String) {
+        // Zeige ein Toast mit der angegebenen Nachricht an
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun ShowBlitzZettel(api: Api, adapter: ZettelAdapter) {
+
         lifecycleScope.launch {
             // API-Aufruf für alle Blitzzettel im Hintergrund-Thread
             val responseData = withContext(Dispatchers.IO) {
@@ -88,28 +108,18 @@ class HomeFragment : Fragment() {
 
         // Listener für den Button, um den Dialog zum Hinzufügen neuer Zettel anzuzeigen
         binding.button.setOnClickListener {
-            // Erstellen einer neuen Instanz des NewBlitzNoteDialogFragment
             NewBlitzNoteDialogFragment().show(
-                // Verwenden des Child Fragment Managers, um das Dialogfragment anzuzeigen
-                childFragmentManager,
-                // Verwenden des TAGs aus dem NewBlitzNoteDialogFragment für die Fragment-Transaktion
-                NewBlitzNoteDialogFragment.TAG
+                childFragmentManager, NewBlitzNoteDialogFragment.TAG
             )
         }
     }
-
-
-    private fun showToast(message: String) {
-        // Zeige ein Toast mit der angegebenen Nachricht an
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+        override fun onDestroyView() {
+            super.onDestroyView()
+            _binding = null
+        }
 
 }
+
 
 
 

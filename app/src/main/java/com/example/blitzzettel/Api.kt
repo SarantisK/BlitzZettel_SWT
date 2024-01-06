@@ -33,8 +33,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2:23123") {
     fun postGenerateToken(username:String, pw:String):String? {
         try {
             val base64_string = Base64.getEncoder()
-                .encodeToString(String.format("%s:%s", username, pw).toByteArray())
-
+                .encodeToString(String.format("%s:%s", username, pw).toByteArray()) //Sorgt für Base64 Verschlüsselung
             val client = OkHttpClient()
             val mediaType = "text/plain".toMediaType()
             val body = "".toRequestBody(mediaType)
@@ -48,10 +47,10 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2:23123") {
             if (response.code == 200) {
                 val token_full =
                     response.body?.string() // Kompletter Token mit "" & Klammern & Dauer wie lange er anhält
-                val token_short = token_full?.replace("(", "")?.replace("\"", "")?.replace(")", "")
+                val token_short = token_full?.replace("(", "")
+                    ?.replace("\"", "")?.replace(")", "")
                     ?.replace("600", "")
                 // Token_short kürz den String auf den richtigen aufbau
-
                 return token_short
             }
             return when (response.code) {
@@ -148,19 +147,18 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2:23123") {
 
     //Funktion, um erstellte Blitzzettel in der App mittels API an den Zettelstore zu senden
         suspend fun postZettelErstellen(p_titel: String, p_content: String, ): String {
-            val client = OkHttpClient()
+            val client = OkHttpClient()   //
             val mediaType = "text/plain".toMediaType()
             val body = String.format(
                 "title: %s\r\nrole: zettel\r\ntags: #blitz\r\nsyntax: zmk \r\nvisibility: login\r\n\r\n%s",
-                p_titel,
-                p_content
+                p_titel, //inhalt des Bodys
+                p_content // Wird parsed in zmk Style
             )
-
             val request = Request.Builder()
-                .url(String.format("http://%s/z",ServerIP))
+                .url(String.format("http://%s/z",ServerIP)) // Aufbau der URl
                 .post(body.toRequestBody(mediaType))
-                .addHeader("Content-Type", "text/plain")
-                .addHeader("Authorization", p_token)
+                .addHeader("Content-Type", "text/plain") //Wird aber gesendet als Plain
+                .addHeader("Authorization", p_token) // Bearer Token für Auth.
                 .build()
 
             return withContext(Dispatchers.IO) {
@@ -171,7 +169,7 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2:23123") {
                     201 -> "Zettel erfolgreich erstellt"
                     400 -> "Ungültige Anfrage"//Syntax-Error
                     // Weitere Statuscodes hier behandeln
-                    else -> ""
+                    else -> "Netzwerkfehler"
                 }
             }
         }
