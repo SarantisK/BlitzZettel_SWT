@@ -8,16 +8,14 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import kotlinx.coroutines.launch
 
 //Hier werden die neuen Zettel erstellt mittels AlertDialog
-class NewBlitzNoteDialogFragment : DialogFragment() {
+class NewBlitzNoteDialogFragment : DialogFragment(), NewZettelView {
 
     // Initialisierung des SharedViewModels
     private val viewModel: SharedViewModel by activityViewModels()
-
+    private lateinit var presenter: NewZettelPresenter
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         // Einrichten des AlertDialog-Builders
@@ -28,6 +26,8 @@ class NewBlitzNoteDialogFragment : DialogFragment() {
 
         // Benutzerdefinierte Ansicht zum Dialog hinzufügen
         builder.setView(view)
+
+        presenter = NewZettelPresenter(this)
 
         // Dialog initialisieren
         initialzieDialog(view)
@@ -47,20 +47,13 @@ class NewBlitzNoteDialogFragment : DialogFragment() {
         // Setzen des OnClickListener für den Hinzufügen-Button
         addButton.setOnClickListener {
             // Extrahieren des Textes aus den EditText-Feldern
-            val newTitel = blitzTitel.text.toString()
-            val newContent = blitzContent.text.toString()
+            val newTitel = blitzTitel.text
+            val newContent = blitzContent.text
 
-            // Überprüfen, ob Titel nicht leer ist
-            if (newTitel.isNotBlank()) {
-                // Funktion zum Erstellen eines Zettels mittels der API
-                sendNoteData(newTitel, newContent)
-                // Zurücksetzen der Eingabefelder nach dem Senden
-                blitzTitel.text.clear()
-                blitzContent.text.clear()
-            } else {
-                //Anzeigen einer Toast-Nachricht, wenn Titel leer ist
-                Toast.makeText(requireContext(), "Titel ist erforderlich", Toast.LENGTH_SHORT).show()
-            }
+            presenter.addNewNote(newTitel, newContent, viewModel)
+            // Zurücksetzen der Eingabefelder nach dem Senden
+            blitzTitel.text.clear()
+            blitzContent.text.clear()
         }
 
         // Setzen des OnClickListener für den Abbrechen-Button
@@ -70,17 +63,11 @@ class NewBlitzNoteDialogFragment : DialogFragment() {
             dismiss() // Dialog schließen
         }
     }
-    private fun sendNoteData(title: String, content: String) {
-        // Initialisieren der API mit Token und Server-IP
-        val api = Api(viewModel.BearerToken.toString(), viewModel.ServerIP)
-        // Ausführen des API-Aufrufs innerhalb eines Coroutine-Scopes
-        lifecycleScope.launch {
-            // Senden der Daten und Empfangen des Feedbacks von der API
-            val feedback = api.postZettelErstellen(title, content)
-            // Anzeigen des Feedbacks in einer Toast-Nachricht
-            Toast.makeText(requireContext(), feedback, Toast.LENGTH_SHORT).show()
-        }
+
+    override fun showFeedback(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
+
 
     companion object {
         // Eine Konstante, die als eindeutiger Bezeichner (TAG)
@@ -88,3 +75,8 @@ class NewBlitzNoteDialogFragment : DialogFragment() {
         const val TAG = "NewBlitzNoteDialog"
     }
 }
+
+interface NewZettelView {
+    fun showFeedback(message: String)
+}
+
