@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class SecondFragment : Fragment() {
+class SecondFragment : Fragment(), SecondView {
 
     private var _binding: FragmentSecondBinding? = null
 
@@ -26,12 +26,15 @@ class SecondFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var presenter: SecondPresenter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Erstellt Binding Klasse, um
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        presenter = SecondPresenter(this)
         return binding.root
 
     }
@@ -41,30 +44,27 @@ class SecondFragment : Fragment() {
 
         // Zettel-ID, die von HomeFragment übergeben wurde
         val zettelId = arguments?.getString("zettelId")
+
         val viewModel:SharedViewModel by activityViewModels()
-        val api = Api(viewModel.BearerToken.toString(),viewModel.ServerIP)
+
+        presenter.onViewCreated(zettelId, viewModel)
 
         // Auf Button "buttonSecond" geklickt, dann zum HomeFragment navigieren
         binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_SecondFragment_to_HomeFragment)
         }
 
-
-        // Mit Coroutines die Daten asynchron laden und anzeigen
-        lifecycleScope.launch {
-
-
-            // API-Aufruf, um einen spezifischen Blitz-Zettel abzurufen
-            val responseData = withContext(Dispatchers.IO) {
-                api.getSpecificBlitzZettel(zettelId.toString())
-            }
-            // Setzt den Text der TextView auf die API-Antwort
-            binding.textviewSecond.text = responseData.toString()
-        }
+    }
+    override fun showZettelContent(data: String) {
+        binding.textviewSecond.text = data
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+}
+
+interface SecondView {
+    fun showZettelContent(data: String)
 }
