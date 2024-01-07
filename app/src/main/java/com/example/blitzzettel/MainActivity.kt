@@ -17,11 +17,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainView {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
+    private lateinit var presenter: MainPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,38 +37,35 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(setOf())
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        //binding.addButton.setOnClickListener { view ->
-        //  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-        //    .setAction("Action", null).show()
-        // }
+        presenter = MainPresenter(this, EncryptedPrefsManager(this))
     }
     //Hinzufügen von Elementen zur Action Bar, falls vorhanden
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-    //Beim Anklicken des Einstellungsicons wird das gespeicherte Passwort
-    //aufgerufen und in der Funktion showPasswordDialogForSettings als Parameter
-    //gespeichert
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.settings -> {
-                val (_, savedPassword, _) = encryptedPrefsManager.getCredentials()
-                showPasswordDialogForSettings(savedPassword)
-                true
-            }
 
-            else -> super.onOptionsItemSelected(item)
-        }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return presenter.onOptionsItemSelected(item)
     }
 
-    private val encryptedPrefsManager by lazy { EncryptedPrefsManager(this) }
+    override fun navigateToSettings() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.navigate(R.id.action_HomeFragment_to_settingsFragment)
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+    }
+
 
 
     //Vergleicht eingegebenes Passwort mit gespeichertem Passwort.
     //Wenn gleich wird man auf die Einstellungen weitergeleitet, wenn nicht
     //erscheint eine Toast-Message.
-    fun showPasswordDialogForSettings(passwort: String?) {
+    override fun showPasswordDialogForSettings(passwort: String?) {
         val builder = AlertDialog.Builder(this)
         val inflater = layoutInflater
         val dialogLayout = inflater.inflate(R.layout.dialog_password, null)
@@ -77,13 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         builder.setPositiveButton("Bestätigen") { _, _ ->
             val enteredPassword = dialogLayout.findViewById<EditText>(R.id.EditTextPassword).text.toString()
-            if (enteredPassword == passwort) {
-                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-                val navController = navHostFragment.navController
-                navController.navigate(R.id.action_HomeFragment_to_settingsFragment)
-            } else {
-                Toast.makeText(this, "Falsches Passwort", Toast.LENGTH_SHORT).show()
-            }
+            presenter.validatePassword(enteredPassword, passwort)
         }
 
         builder.setNegativeButton("Abbrechen") { dialog, _ ->
@@ -95,3 +86,8 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+interface MainView {
+    fun navigateToSettings()
+    fun showPasswordDialogForSettings(passwort: String?)
+    fun showMessage(message: String)
+}
