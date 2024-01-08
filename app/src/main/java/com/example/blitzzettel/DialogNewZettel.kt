@@ -65,6 +65,7 @@ class NewBlitzNoteDialogFragment : DialogFragment(), NewZettelView {
     }
 
     override fun showFeedback(message: String) {
+        //Anzeige Toast-Message
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
