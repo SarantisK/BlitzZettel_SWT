@@ -49,16 +49,24 @@ class MainActivity : AppCompatActivity(), MainView {
         return presenter.onOptionsItemSelected(item)
     }
 
+    // Diese Funktion wird aufgerufen, um zur Einstellungsansicht zu navigieren
     override fun navigateToSettings() {
+        // Das NavHostFragment wird aus dem Fragment-Manager abgerufen, der das Haupt-Navigationsfragment enthält
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+
+        // Der NavController wird aus dem NavHostFragment abgerufen
         val navController = navHostFragment.navController
+
+        // Mit dem NavController wird die Navigation zur Einstellungsansicht ausgelöst
         navController.navigate(R.id.action_HomeFragment_to_settingsFragment)
     }
 
+    // Diese Funktion zeigt eine Toast-Nachricht mit dem übergebenen Text an
     override fun showMessage(message: String) {
+        // Ein Toast-Objekt wird erstellt und angezeigt, um die Nachricht kurzzeitig anzuzeigen
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-
     }
+
 
 
 
@@ -86,8 +94,17 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 }
 
+// Dieses Interface definiert die Methoden, die von der MainActivity implementiert werden müssen, um die Benutzeroberfläche zu aktualisieren
+
 interface MainView {
+    // Diese Methode wird aufgerufen, um zur Einstellungsansicht zu navigieren
     fun navigateToSettings()
-    fun showPasswordDialogForSettings(passwort: String?)
+
+    // Diese Methode wird aufgerufen, um einen Dialog zur Eingabe des Passworts für die Einstellungen anzuzeigen
+    // Das optionale 'passwort' Argument ermöglicht das Vorhandensein eines vorherigen Passworts
+    fun showPasswordDialogForSettings(password: String?)
+
+    // Diese Methode wird aufgerufen, um eine allgemeine Nachricht anzuzeigen, z. B. mit Toast
     fun showMessage(message: String)
 }
+
