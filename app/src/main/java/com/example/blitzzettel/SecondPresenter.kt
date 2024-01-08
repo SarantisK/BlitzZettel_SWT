@@ -6,12 +6,17 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 
 
+// Definition der Klasse SecondPresenter. Diese Klasse ist Teil des MVP-Architekturmusters und fungiert als Presenter.
+// Der Presenter ist verantwortlich für die Geschäftslogik und die Kommunikation zwischen der View (Benutzeroberfläche) und dem Model (Daten).
 class SecondPresenter (private val view: SecondView) {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-
+    // Definition der Funktion 'onViewCreated'
     fun onViewCreated(zettlid: String?, viewModel: SharedViewModel) {
 
+        // Überprüfung, ob die Variable 'zettlid' nicht null ist.
+        // Erstellung einer Instanz der Api-Klasse.
+        // Der BearerToken w für die Authentifizierung bei API-Anfragen
         if (zettlid != null) {
             val api = Api(viewModel.BearerToken.toString(), viewModel.ServerIP)
 
