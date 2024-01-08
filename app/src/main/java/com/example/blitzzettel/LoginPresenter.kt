@@ -1,5 +1,6 @@
 package com.example.blitzzettel
 
+import android.content.SharedPreferences
 import android.text.Editable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,17 +12,26 @@ class LoginPresenter(private val view: LoginView, private val encryptedPrefsMana
     // Erstellt einen CoroutineScope, der für die Ausführung von Aufgaben im Haupt-Dispatcher verwendet wird.
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
+
     // Wird aufgerufen, wenn die zugehörige Ansicht erstellt wird. Prüft und füllt Anmeldeinformationen automatisch aus.
     fun onViewCreated() {
         val (nutzername, passwort, serverId) = encryptedPrefsManager.getCredentials()
-
+        isAutoLogin()
         if (!nutzername.isNullOrEmpty() && !passwort.isNullOrEmpty() && !serverId.isNullOrEmpty()) {
-            view.autoFillCredentials(nutzername, serverId)
+            view.autoFillCredentials(nutzername, serverId,passwort)
+        }
+    }
+
+    fun isAutoLogin(){
+        if (!encryptedPrefsManager.isFirstLogin())
+        {
+            val (nutzername, passwort, serverId) = encryptedPrefsManager.getCredentials()
+            performLogin(nutzername,passwort,serverId)
         }
     }
 
     // Führt den Anmeldevorgang durch, überprüft die Gültigkeit der Eingaben und authentifiziert sich asynchron im Hintergrund.
-    fun performLogin(nutzername: Editable?, passwort: Editable?, serverId: Editable?) {
+    fun performLogin(nutzername: String?, passwort: String?, serverId: String?) {
         val nutzername = nutzername.toString()
         val passwort = passwort.toString()
         val serverId = serverId.toString()
@@ -62,6 +72,7 @@ class LoginPresenter(private val view: LoginView, private val encryptedPrefsMana
                 sharedViewModel.ServerIP = serverId
                 sharedViewModel.BearerToken = token
                 encryptedPrefsManager.saveCredentials(nutzername, passwort, serverId)
+                encryptedPrefsManager.setFirstLoginOff() // Bei Anmeldung Bool auf False
                 // Zeigt eine Erfolgsmeldung an.
                 view.showErrorMessage("Erfolgreich Angemeldet")
             }

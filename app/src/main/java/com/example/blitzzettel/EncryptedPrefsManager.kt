@@ -2,6 +2,7 @@ package com.example.blitzzettel
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
@@ -42,8 +43,16 @@ class EncryptedPrefsManager(context: Context) {
         editor.putString("serverID", serverID)
         editor.apply() // Speichert die Änderungen
     }
+    fun isFirstLogin(): Boolean{
+        return sharedPreferences.getBoolean("firstTime",true)
+    }
+    fun setFirstLoginOff(){
+        sharedPreferences.edit().putBoolean("firstTime",false).apply()
+    }
 
     fun clearLoginData() {
+        sharedPreferences.edit().putBoolean("firstTime",true)
+
         val editor = sharedPreferences.edit()
         editor.clear()
         editor.commit()

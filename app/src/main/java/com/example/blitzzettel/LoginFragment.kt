@@ -30,7 +30,8 @@ package com.example.blitzzettel
         // Presenter-Objekt für Login wird initialisiert
         private lateinit var presenter: LoginPresenter
 
-        // SharedView Model wird durch activityView Model initialisiert
+
+
         private val sharedViewModel: SharedViewModel by activityViewModels()
 
         // Die onCreateView-Methode wird überschrieben, um das Layout für das Fragment zu erstellen/inflaten
@@ -54,19 +55,18 @@ package com.example.blitzzettel
             // onViewCreated wird aufgerufen
             presenter.onViewCreated()
 
-            //Click-Listener für Anmelde-Button
             binding.anmeldeButton.setOnClickListener {
                 // Extrahieren von Nutzername, Passwort und Server-ID aus den Eingabefeldern
-                val nutzername = binding.editTexNutzername.text
-                val passwort = binding.editTextPasswort.text
-                val serverId = binding.editTextServerid.text
-                // peformLogin-Methode wird aufgerufen und die extrahierten Daten werden übergeben
+                val nutzername = binding.editTexNutzername.text.toString()
+                val passwort = binding.editTextPasswort.text.toString()
+                val serverId = binding.editTextServerid.text.toString()
                 presenter.performLogin(nutzername, passwort, serverId)
             }
         }
 
-        override fun autoFillCredentials(nutzername: String, serverId: String) {
+        override fun autoFillCredentials(nutzername: String, serverId: String,passwort : String) {
             binding.editTexNutzername.setText(nutzername)
+            binding.editTextPasswort.setText(passwort) // BUG???
             binding.editTextServerid.setText(serverId)
         }
         override fun showErrorMessage(message: String) {
@@ -87,7 +87,7 @@ package com.example.blitzzettel
     interface LoginView {
         fun showErrorMessage(message: String)
         fun navigateToHome()
-        fun autoFillCredentials(nutzername: String, serverId: String)
+        fun autoFillCredentials(nutzername: String, serverId: String,passwort: String)
     }
 
 
