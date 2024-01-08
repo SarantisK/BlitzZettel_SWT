@@ -79,10 +79,17 @@ class SettingsPresenter(
     private fun processResponse(token: String?, neuerNutzername: String,
                                 neuesPasswort: String, neueServerId: String) {
         when (token) {
-            // Behandlung verschiedener Fehlerfälle
-            "Netzwerkfehler", "400", "401", "403", "Unbekannter Fehler" -> {
-                view.showMessage(message = token)
-            }
+            "Netzwerkfehler" -> view.showMessage(message = "Netzwerkfehler: Verfügbarkeit" +
+                                                            " des Zettelstores prüfen")
+
+            "400" -> view.showMessage(message = "Formulardaten ungültig")
+
+            "401" -> view.showMessage(message = "Benutzer-ID oder Passwort falsch")
+
+            "403" -> view.showMessage(message = "Authentifizierung nicht aktiv: ")
+
+            "Unbekannter Fehler" -> view.showMessage(message = "Unbekannter Fehler")
+
 
             else -> {
                 // Erfolgreiche Anmeldung
