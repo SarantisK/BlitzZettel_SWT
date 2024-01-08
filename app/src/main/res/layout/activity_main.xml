@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -18,12 +19,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="BlitzZettel"
+            android:text="Blitzzettel"
             android:textColor="#fff"
             android:textSize="18sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
-    <!-- Toolbar -->
+
     <fragment
         android:id="@+id/nav_host_fragment_content_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -40,21 +41,14 @@
         android:orientation="vertical">
 
 
-        <!-- Platzhalter für die Zettelansicht -->
-
-        <!-- Add Button unten rechts -->
-
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="16dp" >
-            <!-- Einstellungs-Icon -->
         </FrameLayout>
     </LinearLayout>
 
-
-    <!-- Restliches Layout -->
 
 </RelativeLayout>

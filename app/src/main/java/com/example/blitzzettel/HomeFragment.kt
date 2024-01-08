@@ -57,7 +57,11 @@ class HomeFragment : Fragment(), HomeView {
     private fun setupRecyclerView() {
         adapter = ZettelAdapter(emptyList()) { zettel ->
             // Bei Klick auf einem Zettel wird zum SecondFragment navigiert und die Zettel-ID übergeben
-            val bundle = bundleOf("zettelId" to zettel.id)
+            // Bundle mit Zettel-ID und Zettel-Titel
+            val bundle = bundleOf(
+                "zettelId" to zettel.id,
+                "zettelTitel" to zettel.title
+            )
             findNavController().navigate(R.id.action_HomeFragment_to_SecondFragment, bundle)
         }
         binding.myRecyclerView.layoutManager = LinearLayoutManager(requireContext())

@@ -1,7 +1,5 @@
 package com.example.blitzzettel
 
-import android.content.SharedPreferences
-import android.text.Editable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,6 +36,7 @@ class LoginPresenter(private val view: LoginView, private val encryptedPrefsMana
 
         if (nutzername.isBlank() || passwort.isBlank() || serverId.isBlank()) {
             view.showErrorMessage("Alle Felder ausfüllen")
+            return
         }
 
         val api = Api("", serverId)

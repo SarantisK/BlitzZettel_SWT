@@ -1,19 +1,16 @@
 package com.example.blitzzettel
 
-    import android.content.SharedPreferences
-    import android.os.Bundle
-    import androidx.fragment.app.Fragment
-    import android.view.LayoutInflater
-    import android.view.View
-    import android.view.ViewGroup
-    import android.widget.Toast
-    import androidx.fragment.app.activityViewModels
-    import androidx.lifecycle.lifecycleScope
-    import androidx.navigation.fragment.findNavController
-    import com.example.blitzzettel.databinding.FragmentLoginBinding
-    import kotlinx.coroutines.Dispatchers
-    import kotlinx.coroutines.launch
-    import kotlinx.coroutines.withContext
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.example.blitzzettel.databinding.FragmentLoginBinding
+
 
     /**
      * LoginFragment ist zuständig für die Benutzerauthentifizierung. Es fordert vom Benutzer,

@@ -6,12 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.blitzzettel.databinding.FragmentSecondBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -44,6 +40,10 @@ class SecondFragment : Fragment(), SecondView {
 
         // Zettel-ID, die von HomeFragment übergeben wurde
         val zettelId = arguments?.getString("zettelId")
+
+        // Zettel-Titel, die von HomeFragment übergeben wurde
+        val zettelTitel = arguments?.getString("zettelTitel")
+        binding.textviewTitel.text = zettelTitel
 
         val viewModel:SharedViewModel by activityViewModels()
 
