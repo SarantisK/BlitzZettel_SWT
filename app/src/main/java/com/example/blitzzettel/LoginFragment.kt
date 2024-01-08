@@ -25,37 +25,42 @@ package com.example.blitzzettel
 
         // Binding-Variable für den Zugriff auf die Views
         private var _binding: FragmentLoginBinding? = null
+        // Binding = non null variable, die auf Binding-Objekt zugreift
         private val binding get() = _binding!!
-
+        // Presenter-Objekt für Login wird initialisiert
         private lateinit var presenter: LoginPresenter
 
-
-
+        // SharedView Model wird durch activityView Model initialisiert
         private val sharedViewModel: SharedViewModel by activityViewModels()
 
-        // Layout des Fragments inflaten
+        // Die onCreateView-Methode wird überschrieben, um das Layout für das Fragment zu erstellen/inflaten
         override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
         ): View? {
-            // Das Binding wird initialisiert
+            // Die Binding wird initialisiert
             _binding = FragmentLoginBinding.inflate(inflater, container, false)
-
+            // Der LoginPresenter wird initialisiert und erhält eine Referenz auf das aktuelle Fragment, einen EncryptedPrefsManager und das sharedViewModel
             presenter = LoginPresenter(this, EncryptedPrefsManager(requireContext()), sharedViewModel)
 
-
+            // Root View des Fragments wird zurückgegeben
             return binding.root
         }
 
+        // onViewCreated-Methode wird überschrieben und erhält View und gespeicherten Zustand
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            //Aufruf der übergeordneten Klasse
             super.onViewCreated(view, savedInstanceState)
+            // onViewCreated wird aufgerufen
             presenter.onViewCreated()
 
+            //Click-Listener für Anmelde-Button
             binding.anmeldeButton.setOnClickListener {
                 // Extrahieren von Nutzername, Passwort und Server-ID aus den Eingabefeldern
                 val nutzername = binding.editTexNutzername.text
                 val passwort = binding.editTextPasswort.text
                 val serverId = binding.editTextServerid.text
+                // peformLogin-Methode wird aufgerufen und die extrahierten Daten werden übergeben
                 presenter.performLogin(nutzername, passwort, serverId)
             }
         }
