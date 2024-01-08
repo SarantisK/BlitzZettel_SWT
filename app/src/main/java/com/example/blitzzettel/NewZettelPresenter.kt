@@ -9,7 +9,7 @@ class NewZettelPresenter(private val view: NewZettelView) {
     // Eigenschaften und Abhängigkeiten
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    fun addNewNote(title: Editable, content: Editable, viewModel: SharedViewModel) {
+    fun addNewNote(title: Editable, content: Editable, viewModel: SharedViewModel, clearInputFields: () -> Unit) {
         // Überprüft, ob der title nicht leer ist
         if (title.isNotBlank()) {
             //Coroutine für asynchrone Operationen
@@ -20,6 +20,7 @@ class NewZettelPresenter(private val view: NewZettelView) {
                 val feedback = api.postZettelErstellen(title.toString(), content.toString())
                 // Zeigt Feedback in der Ansicht an
                 view.showFeedback(feedback)
+                clearInputFields()
             }
         } else {
             // Zeigt eine Meldung in der Ansicht an, dass ein Titel erforderlich ist, wenn der title leer ist

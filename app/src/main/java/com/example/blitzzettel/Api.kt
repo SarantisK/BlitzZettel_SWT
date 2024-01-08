@@ -64,19 +64,6 @@ class Api(val p_token:String ="" , val ServerIP:String = "10.0.2.2:23123") {
         }
     }
 
-    //Funktion, um Fehlermeldungen basierend auf dem Fehlercode anzuzeigen
-    fun getErrorMessage(errorCode: String?): String {
-        return when (errorCode) {
-            "Netzwerkfehler" -> "Netzwerkfehler: Verfügbarkeit des Zettelstores prüfen"
-            "400" -> "Formulardaten ungültig"
-            "401" -> "Benutzer-ID oder Passwort falsch"
-            "403" -> "Authentifizierung nicht aktiv: Im Zettelstore einrichten"
-            "Unbekannter Fehler" -> "Unbekannter Fehler"
-            else -> "Ein Fehler ist aufgetreten"
-        }
-    }
-
-
         //Funktion, um Authentifizerungstoken zu erneuern
         suspend fun renewToken() {
             val client = OkHttpClient()

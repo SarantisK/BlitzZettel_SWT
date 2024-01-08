@@ -50,10 +50,10 @@ class NewBlitzNoteDialogFragment : DialogFragment(), NewZettelView {
             val newTitel = blitzTitel.text
             val newContent = blitzContent.text
 
-            presenter.addNewNote(newTitel, newContent, viewModel)
-            // Zurücksetzen der Eingabefelder nach dem Senden
-            blitzTitel.text.clear()
-            blitzContent.text.clear()
+            presenter.addNewNote(newTitel, newContent, viewModel) {
+                blitzTitel.text.clear()
+                blitzContent.text.clear()
+            }
         }
 
         // Setzen des OnClickListener für den Abbrechen-Button
@@ -69,6 +69,12 @@ class NewBlitzNoteDialogFragment : DialogFragment(), NewZettelView {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
+    override fun clearInputFields() {
+        view?.findViewById<EditText>(R.id.blitz_titel)?.text?.clear()
+        view?.findViewById<EditText>(R.id.blitz_content)?.text?.clear()
+
+    }
+
 
     companion object {
         // Eine Konstante, die als eindeutiger Bezeichner (TAG)
@@ -79,5 +85,6 @@ class NewBlitzNoteDialogFragment : DialogFragment(), NewZettelView {
 
 interface NewZettelView {
     fun showFeedback(message: String)
+    fun clearInputFields()
 }
 
