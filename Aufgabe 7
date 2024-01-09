@@ -4,3 +4,6 @@
 4. Anschließend muss die ADB(Android debug bridge) installiert werden, https://developer.android.com/studio#downloads befeindet sich ganz unten als 'command-line tools only'
 5. Verwenden sie den Befehl 'adb install Pfad\zur\Ihrer\App.apk' , hierbei wird versuch die APK auf dem verbundenen Gerät/Emulator zu installieren
 6. Starten sie die App manuell.
+
+Hinweis:
+Das Paket okhttp3 wird durch gradle automatisch installiert und ist eine externe Software. Die Lizenz ist unter contributors.txt aufzufinden.
