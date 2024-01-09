@@ -60,16 +60,21 @@ import com.example.blitzzettel.databinding.FragmentLoginBinding
                 presenter.performLogin(nutzername, passwort, serverId)
             }
         }
-
+        // Funktion, welche die Textfelder automatisch mit den Anmeldedaten ausfüllt
         override fun autoFillCredentials(nutzername: String, serverId: String,passwort : String) {
+            // Nutzername wird ins Textfeld übergeben
             binding.editTexNutzername.setText(nutzername)
+            // Passwort wird in das Textfeld übergeben
             binding.editTextPasswort.setText(passwort) // BUG???
+            // Server-ID wird in das Textfeld übergeben
             binding.editTextServerid.setText(serverId)
         }
+        // Fehlermeldung wird als Toast-Nachricht angezeigt
         override fun showErrorMessage(message: String) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
 
+        // Funktion die zum HomeFragment navigiert
         override fun navigateToHome() {
             findNavController().navigate(R.id.action_loginFragment_to_HomeFragment)
         }
@@ -80,10 +85,13 @@ import com.example.blitzzettel.databinding.FragmentLoginBinding
             _binding = null
         }
     }
-
+     //Schnittstelle von Funktionen
     interface LoginView {
+        // Fehlermeldung wird angezeigt
         fun showErrorMessage(message: String)
+        // Navigiert zur Home-Ansicht
         fun navigateToHome()
+        // Anmeldedaten werden automatisch ausgefüllt
         fun autoFillCredentials(nutzername: String, serverId: String,passwort: String)
     }
 
