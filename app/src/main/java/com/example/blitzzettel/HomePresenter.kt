@@ -5,15 +5,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HomePresenter(private val view: HomeView) {
+/*
+*
+* // Der HomePresenter ist verantwortlich für die Verarbeitung der Logik des HomeFragments.
+ */
 
+class HomePresenter(private val view: HomeView) {
+    // Erstellt einen CoroutineScope, der auf dem Main-Thread ausgeführt wird,
+    // um UI-Aktualisierungen zu ermöglichen.
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
+    // onViewCreated wird aufgerufen, wenn das View erstellt wurde.
     fun onViewCreated(viewModel: SharedViewModel) {
-        // Verwendung des SharedViewModels zur Verwaltung des Zustands und der Daten zwischen den Fragments
 
-        // API-Instanz wird erstellt
+
+        // API-Instanz wird mit dem Bearer Token und der Server-IP aus dem ViewModel erstellt
         val api = Api(viewModel.BearerToken.toString(), viewModel.ServerIP)
+
+        // Führe die API-Anfrage im IO-Dispatcher aus, um den Main-Thread nicht zu blockieren
         coroutineScope.launch {
 
             val responseData = withContext(Dispatchers.IO) {
@@ -30,7 +39,7 @@ class HomePresenter(private val view: HomeView) {
                 "Netzwerkfehler" -> view.showError(message = "Netzwerkfehler: Verfügbarkeit des Zettelstores prüfen")
 
                 else -> {
-                    // Parsen der Daten als Liste von Zettel-Objekten
+                    // Parsen der Daten als Liste von Zettel-Objekten und Anzeige in View
                     val zettelList = parseZettelListApi(responseData.toString())
                     view.showZettels(zettelList)
                 }

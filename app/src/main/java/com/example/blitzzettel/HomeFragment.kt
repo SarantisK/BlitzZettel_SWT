@@ -23,22 +23,36 @@ import android.widget.Toast
 
 class HomeFragment : Fragment(), HomeView {
 
+    // Binding-Objekt für das Fragment, wird zur Verwaltung der Views verwendet
     private var _binding: FragmentHomeBinding? = null
+    // Sicherer Zugriff auf das Binding, das null sein könnte
     private val binding get() = _binding!!
+
+    // Presenter und Adapter für die Logik und Anzeige der Daten
     private lateinit var presenter: HomePresenter
     private lateinit var adapter: ZettelAdapter
 
+    // onCreateView wird aufgerufen, um das Layout des Fragments zu "inflaten"
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        // Inflater verwendet das Binding-Objekt, um das Layout aufzubauen
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        // Initialisierung des Presenters
         presenter = HomePresenter(this )
+        // Die Wurzelansicht des Fragments wird zurückgegeben
         return binding.root
     }
 
+    // onViewCreated wird aufgerufen, nachdem das Layout instanziiert wurde
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Einrichtung der RecyclerView, die die Zettel anzeigt
         setupRecyclerView()
+
         // Verwendung des SharedViewModels zur Verwaltung des Zustands und der Daten zwischen den Fragments
         val viewModel: SharedViewModel by activityViewModels()
+
+        // Presenter bekommt das ViewModel übergeben
         presenter.onViewCreated(viewModel)
 
         // Listener für den Button, um den Dialog zum Hinzufügen neuer Zettel anzuzeigen
@@ -54,6 +68,7 @@ class HomeFragment : Fragment(), HomeView {
 
     }
 
+    // Hilfsmethode zur Einrichtung der RecyclerView
     private fun setupRecyclerView() {
         adapter = ZettelAdapter(emptyList()) { zettel ->
             // Bei Klick auf einem Zettel wird zum SecondFragment navigiert und die Zettel-ID übergeben
@@ -69,22 +84,27 @@ class HomeFragment : Fragment(), HomeView {
 
     }
 
+    // Methode, um die Zettel in der RecyclerView anzuzeigen
     override fun showZettels(zettels: List<Zettel>) {
         adapter.zettelList = zettels
         adapter.notifyDataSetChanged()
     }
 
+    // Methode zur Anzeige von Fehlermeldungen als Toast
     override fun showError(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
+    // onDestroyView wird aufgerufen, um Ressourcen freizugeben
     override fun onDestroyView() {
         super.onDestroyView()
+        // Binding-Ressourcen werden auf null gesetzt, um Speicherlecks zu vermeiden
         _binding = null
     }
 }
 
+// Interface, das die Methoden für das HomeView definiert
 interface HomeView {
-    fun showZettels(zettels: List<Zettel>)
-    fun showError(message: String)
+    fun showZettels(zettels: List<Zettel>) // Anzeige der Zettel
+    fun showError(message: String) // Anzeige von Fehlermeldungen
 }
